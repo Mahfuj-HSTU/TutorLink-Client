@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useParams } from "next/navigation";
 import { useGetTutorByIdQuery } from "@/lib/redux/api/tutorApi";
 import { useCreateBookingMutation } from "@/lib/redux/api/bookingApi";
-import { useSession } from "@/lib/auth-client";
+import { useAuth } from "@/lib/use-auth";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import Badge from "@/components/ui/Badge";
 import StarRating from "@/components/ui/StarRating";
@@ -39,8 +39,9 @@ const teachingModeLabel = {
 
 export default function TutorDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const { data: session } = useSession();
-  const user = session?.user;
+  const { user } = useAuth();
+  // Cast to our User type which includes the custom `role` field added by better-auth
+  
 
   const { data, isLoading } = useGetTutorByIdQuery(id);
   const tutor = data?.data;

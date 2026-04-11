@@ -1,6 +1,6 @@
 "use client";
 
-import { useSession } from "@/lib/auth-client";
+import { useAuth } from "@/lib/use-auth";
 import { useGetMyBookingsQuery } from "@/lib/redux/api/bookingApi";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { Card, CardBody } from "@/components/ui/Card";
@@ -10,8 +10,8 @@ import Button from "@/components/ui/Button";
 import { CalendarDays, CheckCircle, XCircle, BookOpen } from "lucide-react";
 
 export default function StudentDashboardPage() {
-  const { data: session } = useSession();
-  const user = session?.user;
+  const { user } = useAuth();
+  
 
   const { data, isLoading } = useGetMyBookingsQuery();
   const bookings = data?.data ?? [];

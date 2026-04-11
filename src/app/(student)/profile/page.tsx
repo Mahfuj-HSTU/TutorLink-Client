@@ -1,13 +1,13 @@
 "use client";
 
-import { useSession } from "@/lib/auth-client";
+import { useAuth } from "@/lib/use-auth";
 import { Card, CardBody, CardHeader } from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
 import { User, Mail, Phone, Shield } from "lucide-react";
 
 export default function StudentProfilePage() {
-  const { data: session } = useSession();
-  const user = session?.user;
+  const { user } = useAuth();
+  
 
   if (!user)
     return (
