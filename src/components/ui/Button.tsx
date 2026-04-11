@@ -1,5 +1,7 @@
+"use client";
+
 import { cn } from "@/lib/utils";
-import { type ButtonHTMLAttributes, forwardRef } from "react";
+import { type ButtonHTMLAttributes } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "secondary" | "outline" | "ghost" | "danger";
@@ -26,21 +28,18 @@ const sizeStyles = {
   lg: "px-6 py-3 text-base",
 };
 
-const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  (
-    {
-      className,
-      variant = "primary",
-      size = "md",
-      loading = false,
-      disabled,
-      children,
-      ...props
-    },
-    ref
-  ) => (
+// In React 19, ref is a regular prop — no need for forwardRef.
+export default function Button({
+  className,
+  variant = "primary",
+  size = "md",
+  loading = false,
+  disabled,
+  children,
+  ...props
+}: ButtonProps) {
+  return (
     <button
-      ref={ref}
       disabled={disabled || loading}
       className={cn(
         "inline-flex items-center justify-center gap-2 rounded-lg font-medium",
@@ -57,8 +56,5 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       )}
       {children}
     </button>
-  )
-);
-Button.displayName = "Button";
-
-export default Button;
+  );
+}
