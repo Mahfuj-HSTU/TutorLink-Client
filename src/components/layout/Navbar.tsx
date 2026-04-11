@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Menu, X, BookOpen, ChevronDown } from "lucide-react";
-import { useSession, signOut } from "@/lib/auth-client";
+import { signOut } from "@/lib/auth-client";
+import { useAuth } from "@/lib/use-auth";
 import Button from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 
@@ -28,8 +29,8 @@ const roleLinks: Record<string, { label: string; href: string }[]> = {
 
 export default function Navbar() {
   const router = useRouter();
-  const { data: session } = useSession();
-  const user = session?.user;
+  const { user } = useAuth();
+  
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
