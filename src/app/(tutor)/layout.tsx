@@ -2,6 +2,7 @@
 
 import Navbar from "@/components/layout/Navbar";
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import AuthGuard from "@/components/AuthGuard";
 import {
   LayoutDashboard,
   CalendarDays,
@@ -26,9 +27,11 @@ export default function TutorLayout({
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar />
-      <DashboardLayout title="Tutor" navItems={tutorNav}>
-        {children}
-      </DashboardLayout>
+      <AuthGuard allowedRoles={["TUTOR"]}>
+        <DashboardLayout title="Tutor" navItems={tutorNav}>
+          {children}
+        </DashboardLayout>
+      </AuthGuard>
     </div>
   );
 }

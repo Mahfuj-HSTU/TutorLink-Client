@@ -2,6 +2,7 @@
 
 import Navbar from "@/components/layout/Navbar";
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import AuthGuard from "@/components/AuthGuard";
 import { LayoutDashboard, CalendarDays, User } from "lucide-react";
 
 const studentNav = [
@@ -18,9 +19,11 @@ export default function StudentLayout({
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar />
-      <DashboardLayout title="Student" navItems={studentNav}>
-        {children}
-      </DashboardLayout>
+      <AuthGuard allowedRoles={["STUDENT"]}>
+        <DashboardLayout title="Student" navItems={studentNav}>
+          {children}
+        </DashboardLayout>
+      </AuthGuard>
     </div>
   );
 }

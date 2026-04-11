@@ -2,6 +2,7 @@
 
 import Navbar from "@/components/layout/Navbar";
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import AuthGuard from "@/components/AuthGuard";
 import { LayoutDashboard, Users, BookOpen } from "lucide-react";
 
 const adminNav = [
@@ -18,9 +19,11 @@ export default function AdminLayout({
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar />
-      <DashboardLayout title="Admin" navItems={adminNav}>
-        {children}
-      </DashboardLayout>
+      <AuthGuard allowedRoles={["ADMIN"]}>
+        <DashboardLayout title="Admin" navItems={adminNav}>
+          {children}
+        </DashboardLayout>
+      </AuthGuard>
     </div>
   );
 }
