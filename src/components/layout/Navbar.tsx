@@ -52,8 +52,8 @@ export default function Navbar() {
             src='/logo.png'
             alt='TutorLink'
             width={140}
-            height={20}
-            className='h-44 w-auto -ml-8'
+            height={30}
+            className='h-12 w-auto'
             priority
           />
         </Link>
