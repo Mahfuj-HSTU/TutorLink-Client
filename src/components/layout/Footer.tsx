@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { BookOpen, Mail, ExternalLink, Globe } from "lucide-react";
+import Image from "next/image";
+import { Mail, ExternalLink, Globe } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -8,9 +9,8 @@ export default function Footer() {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
-            <Link href="/" className="flex items-center gap-2 font-bold text-indigo-600">
-              <BookOpen size={22} />
-              <span className="text-lg">TutorLink</span>
+            <Link href="/">
+              <Image src="/logo.png" alt="TutorLink" width={120} height={40} className="h-9 w-auto" />
             </Link>
             <p className="mt-3 max-w-xs text-sm text-slate-500">
               Connecting learners with expert tutors for a personalised, flexible
