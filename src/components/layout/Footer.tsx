@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BookOpen, Mail, Twitter, Github } from "lucide-react";
+import { BookOpen, Mail, ExternalLink, Globe } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -21,13 +21,13 @@ export default function Footer() {
                 href="#"
                 className="rounded-lg p-2 text-slate-400 hover:bg-slate-200 hover:text-slate-600 transition-colors"
               >
-                <Twitter size={16} />
+                <ExternalLink size={16} />
               </a>
               <a
                 href="#"
                 className="rounded-lg p-2 text-slate-400 hover:bg-slate-200 hover:text-slate-600 transition-colors"
               >
-                <Github size={16} />
+                <Globe size={16} />
               </a>
               <a
                 href="mailto:hello@tutorlink.com"
