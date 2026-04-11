@@ -7,7 +7,6 @@ import { signIn } from "@/lib/auth-client";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import toast from "react-hot-toast";
-import type { Metadata } from "next";
 
 export default function LoginPage() {
   const router = useRouter();

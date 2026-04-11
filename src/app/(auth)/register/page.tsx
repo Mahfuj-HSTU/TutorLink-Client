@@ -38,8 +38,11 @@ export default function RegisterPage() {
         return;
       }
 
-      toast.success("Account created! Please log in.");
-      router.push("/login");
+      toast.success("Account created! Welcome to TutorLink.");
+
+      // autoSignIn:true means the user is already signed in — go straight to dashboard
+      if (role === "TUTOR") router.push("/tutor/dashboard");
+      else router.push("/dashboard");
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {
