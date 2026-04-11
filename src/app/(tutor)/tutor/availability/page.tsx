@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSession } from "@/lib/auth-client";
+import { useAuth } from "@/lib/use-auth";
 import {
   useGetTutorsQuery,
   useUpdateTutorAvailabilityMutation,
@@ -15,8 +15,8 @@ import toast from "react-hot-toast";
 import { ToggleLeft, ToggleRight } from "lucide-react";
 
 export default function TutorAvailabilityPage() {
-  const { data: session } = useSession();
-  const userId = session?.user?.id;
+  const { user } = useAuth();
+  const userId = user?.id;
 
   const { data: tutorsData, isLoading } = useGetTutorsQuery({});
   const myProfile = (tutorsData?.data ?? []).find(

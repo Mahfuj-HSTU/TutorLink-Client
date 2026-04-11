@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSession } from "@/lib/auth-client";
+import { useAuth } from "@/lib/use-auth";
 import { useGetCategoriesQuery } from "@/lib/redux/api/categoryApi";
 import {
   useGetTutorsQuery,
@@ -16,8 +16,8 @@ import toast from "react-hot-toast";
 import { BookOpen } from "lucide-react";
 
 export default function TutorCategoriesPage() {
-  const { data: session } = useSession();
-  const userId = session?.user?.id;
+  const { user } = useAuth();
+  const userId = user?.id;
 
   const { data: tutorsData, isLoading: loadingTutors } = useGetTutorsQuery({});
   const { data: categoriesData, isLoading: loadingCats } = useGetCategoriesQuery();

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSession } from "@/lib/auth-client";
+import { useAuth } from "@/lib/use-auth";
 import {
   useCreateTutorProfileMutation,
   useUpdateTutorProfileMutation,
@@ -30,8 +30,8 @@ const defaultForm: CreateTutorProfilePayload = {
 };
 
 export default function TutorProfilePage() {
-  const { data: session } = useSession();
-  const userId = session?.user?.id;
+  const { user } = useAuth();
+  const userId = user?.id;
 
   // Fetch all tutors to find current user's profile
   const { data: tutorsData } = useGetTutorsQuery({});
