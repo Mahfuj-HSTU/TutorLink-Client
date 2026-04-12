@@ -30,15 +30,15 @@ export default function AuthGuard({ children, allowedRoles }: AuthGuardProps) {
     }
   }, [user, isPending, router, allowedRoles]);
 
-  if (isPending) {
+  // Show spinner while: session is loading, redirect to /login is in flight,
+  // or role-mismatch redirect is in flight — prevents a blank page flash.
+  if (isPending || !user || !allowedRoles.includes(user.role)) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-600 border-t-transparent" />
       </div>
     );
   }
-
-  if (!user || !allowedRoles.includes(user.role)) return null;
 
   return <>{children}</>;
 }

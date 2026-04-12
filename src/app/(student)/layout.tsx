@@ -19,7 +19,7 @@ export default function StudentLayout({
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar />
-      <AuthGuard allowedRoles={["STUDENT"]}>
+      <AuthGuard allowedRoles={["STUDENT", "TUTOR", "ADMIN"]}>
         <DashboardLayout title="Student" navItems={studentNav}>
           {children}
         </DashboardLayout>

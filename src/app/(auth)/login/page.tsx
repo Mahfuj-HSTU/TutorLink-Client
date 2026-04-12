@@ -1,19 +1,38 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signIn } from "@/lib/auth-client";
+import { useAuth } from "@/lib/use-auth";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import toast from "react-hot-toast";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { user, isPending } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // Already logged in — send to the right dashboard
+  useEffect(() => {
+    if (isPending || !user) return;
+    if (user.role === "ADMIN") router.replace("/admin/dashboard");
+    else if (user.role === "TUTOR") router.replace("/tutor/dashboard");
+    else router.replace("/dashboard");
+  }, [user, isPending, router]);
+
+  // Only hide the form once we *know* the user is logged in (not while still checking)
+  if (!isPending && user) {
+    return (
+      <div className="flex min-h-[40vh] items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-600 border-t-transparent" />
+      </div>
+    );
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,7 +49,6 @@ export default function LoginPage() {
 
       toast.success("Welcome back!");
 
-      // Redirect based on user role
       const role = (result.data as { user?: { role?: string } })?.user?.role;
       if (role === "ADMIN") router.push("/admin/dashboard");
       else if (role === "TUTOR") router.push("/tutor/dashboard");
@@ -86,7 +104,6 @@ export default function LoginPage() {
         </Link>
       </p>
 
-      {/* Demo credentials hint */}
       <div className="mt-4 rounded-lg bg-slate-50 p-3 text-xs text-slate-500">
         <strong>Admin demo:</strong> admin@tutorlink.com / tutorlink_admin123
       </div>
