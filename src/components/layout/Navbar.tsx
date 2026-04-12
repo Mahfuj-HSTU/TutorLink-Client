@@ -10,22 +10,17 @@ import { useAuth } from '@/lib/use-auth'
 import Button from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
 
-const roleLinks: Record<string, { label: string; href: string }[]> = {
-  STUDENT: [
-    { label: 'Dashboard', href: '/dashboard' },
-    { label: 'My Bookings', href: '/bookings' },
-    { label: 'Profile', href: '/profile' }
-  ],
-  TUTOR: [
-    { label: 'Dashboard', href: '/tutor/dashboard' },
-    { label: 'Bookings', href: '/tutor/bookings' },
-    { label: 'Profile', href: '/tutor/profile' }
-  ],
-  ADMIN: [
-    { label: 'Dashboard', href: '/admin/dashboard' },
-    { label: 'Users', href: '/admin/users' },
-    { label: 'Categories', href: '/admin/categories' }
-  ]
+const dashboardHref: Record<string, string> = {
+  STUDENT: '/dashboard',
+  TUTOR: '/tutor/dashboard',
+  ADMIN: '/admin/dashboard',
+}
+
+// Primary nav link shown beside the logo — varies by role
+const primaryNavLink: Record<string, { label: string; href: string }> = {
+  STUDENT: { label: 'Find Tutors', href: '/tutors' },
+  TUTOR: { label: 'My Bookings', href: '/tutor/bookings' },
+  ADMIN: { label: 'Manage Users', href: '/admin/users' },
 }
 
 export default function Navbar() {
@@ -40,8 +35,6 @@ export default function Navbar() {
     router.push('/')
     router.refresh()
   }
-
-  const dashboardLinks = user ? (roleLinks[user.role] ?? []) : []
 
   return (
     <header className='sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur supports-backdrop-filter:bg-white/60'>
@@ -60,11 +53,18 @@ export default function Navbar() {
 
         {/* Desktop nav */}
         <div className='hidden items-center gap-6 md:flex'>
-          <Link
-            href='/tutors'
-            className='text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors'>
-            Find Tutors
-          </Link>
+          {(() => {
+            const link = user
+              ? (primaryNavLink[user.role] ?? primaryNavLink.STUDENT)
+              : primaryNavLink.STUDENT
+            return (
+              <Link
+                href={link.href}
+                className='text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors'>
+                {link.label}
+              </Link>
+            )
+          })()}
 
           {user ? (
             <div className='relative'>
@@ -93,16 +93,17 @@ export default function Navbar() {
                     className='fixed inset-0'
                     onClick={() => setDropdownOpen(false)}
                   />
-                  <div className='absolute right-0 top-full mt-2 w-52 rounded-xl border border-slate-200 bg-white py-1 shadow-lg'>
-                    {dashboardLinks.map((link) => (
-                      <Link
-                        key={link.href}
-                        href={link.href}
-                        onClick={() => setDropdownOpen(false)}
-                        className='block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-indigo-600 transition-colors'>
-                        {link.label}
-                      </Link>
-                    ))}
+                  <div className='absolute right-0 top-full mt-2 w-48 rounded-xl border border-slate-200 bg-white py-1 shadow-lg'>
+                    <div className='px-4 py-2 text-xs text-slate-400'>
+                      {user.email}
+                    </div>
+                    <hr className='my-1 border-slate-200' />
+                    <Link
+                      href={dashboardHref[user.role] ?? '/dashboard'}
+                      onClick={() => setDropdownOpen(false)}
+                      className='block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-indigo-600 transition-colors'>
+                      Dashboard
+                    </Link>
                     <hr className='my-1 border-slate-200' />
                     <button
                       onClick={handleSignOut}
@@ -149,23 +150,27 @@ export default function Navbar() {
           mobileOpen ? 'max-h-screen' : 'max-h-0'
         )}>
         <div className='border-t border-slate-200 px-4 py-4 space-y-2'>
-          <Link
-            href='/tutors'
-            onClick={() => setMobileOpen(false)}
-            className='block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50'>
-            Find Tutors
-          </Link>
-          {user ? (
-            <>
-              {dashboardLinks.map((link) => (
+          {(() => {
+              const link = user
+                ? (primaryNavLink[user.role] ?? primaryNavLink.STUDENT)
+                : primaryNavLink.STUDENT
+              return (
                 <Link
-                  key={link.href}
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
-                  className='block rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-50'>
+                  className='block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50'>
                   {link.label}
                 </Link>
-              ))}
+              )
+            })()}
+          {user ? (
+            <>
+              <Link
+                href={dashboardHref[user.role] ?? '/dashboard'}
+                onClick={() => setMobileOpen(false)}
+                className='block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50'>
+                Dashboard
+              </Link>
               <button
                 onClick={() => {
                   handleSignOut()
