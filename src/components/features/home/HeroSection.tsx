@@ -4,7 +4,7 @@ import { Search, Star, Users } from "lucide-react";
 
 export default function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-indigo-50 via-white to-purple-50 py-20 sm:py-28">
+    <section className="relative overflow-hidden bg-linear-to-br from-indigo-50 via-white to-purple-50 py-20 sm:py-28">
       {/* Decorative blob */}
       <div className="absolute -right-40 -top-40 h-96 w-96 rounded-full bg-indigo-100 opacity-60 blur-3xl" />
       <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-purple-100 opacity-60 blur-3xl" />

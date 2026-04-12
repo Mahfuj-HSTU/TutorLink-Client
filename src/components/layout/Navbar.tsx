@@ -118,12 +118,17 @@ export default function Navbar() {
               <Link href='/login'>
                 <Button
                   variant='ghost'
-                  size='sm'>
+                  size='sm'
+                  className='cursor-pointer'>
                   Log In
                 </Button>
               </Link>
               <Link href='/register'>
-                <Button size='sm'>Get Started</Button>
+                <Button
+                  size='sm'
+                  className='cursor-pointer'>
+                  Get Started
+                </Button>
               </Link>
             </div>
           )}
