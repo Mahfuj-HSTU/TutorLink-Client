@@ -13,14 +13,14 @@ import { cn } from '@/lib/utils'
 const dashboardHref: Record<string, string> = {
   STUDENT: '/dashboard',
   TUTOR: '/tutor/dashboard',
-  ADMIN: '/admin/dashboard',
+  ADMIN: '/admin/dashboard'
 }
 
 // Primary nav link shown beside the logo — varies by role
 const primaryNavLink: Record<string, { label: string; href: string }> = {
   STUDENT: { label: 'Find Tutors', href: '/tutors' },
   TUTOR: { label: 'My Bookings', href: '/tutor/bookings' },
-  ADMIN: { label: 'Manage Users', href: '/admin/users' },
+  ADMIN: { label: 'Manage Users', href: '/admin/users' }
 }
 
 export default function Navbar() {
@@ -94,9 +94,9 @@ export default function Navbar() {
                     onClick={() => setDropdownOpen(false)}
                   />
                   <div className='absolute right-0 top-full mt-2 w-48 rounded-xl border border-slate-200 bg-white py-1 shadow-lg'>
-                    <div className='px-4 py-2 text-xs text-slate-400'>
+                    {/* <div className='px-4 py-2 text-xs text-slate-400'>
                       {user.email}
-                    </div>
+                    </div> */}
                     <hr className='my-1 border-slate-200' />
                     <Link
                       href={dashboardHref[user.role] ?? '/dashboard'}
@@ -151,18 +151,18 @@ export default function Navbar() {
         )}>
         <div className='border-t border-slate-200 px-4 py-4 space-y-2'>
           {(() => {
-              const link = user
-                ? (primaryNavLink[user.role] ?? primaryNavLink.STUDENT)
-                : primaryNavLink.STUDENT
-              return (
-                <Link
-                  href={link.href}
-                  onClick={() => setMobileOpen(false)}
-                  className='block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50'>
-                  {link.label}
-                </Link>
-              )
-            })()}
+            const link = user
+              ? (primaryNavLink[user.role] ?? primaryNavLink.STUDENT)
+              : primaryNavLink.STUDENT
+            return (
+              <Link
+                href={link.href}
+                onClick={() => setMobileOpen(false)}
+                className='block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50'>
+                {link.label}
+              </Link>
+            )
+          })()}
           {user ? (
             <>
               <Link
