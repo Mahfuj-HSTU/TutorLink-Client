@@ -10,20 +10,12 @@ const protectedPrefixes = [
   '/admin/'
 ]
 
-// Routes only for unauthenticated users
-const authRoutes = ['/login', '/register']
-
-export function proxy(request: NextRequest) {
+export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // better-auth stores the session token in this cookie
   const sessionToken = request.cookies.get('better-auth.session_token')
   const isAuthenticated = Boolean(sessionToken?.value)
-
-  // Redirect logged-in users away from login/register
-  if (isAuthenticated && authRoutes.some((r) => pathname.startsWith(r))) {
-    return NextResponse.redirect(new URL('/dashboard', request.url))
-  }
 
   // Redirect unauthenticated users away from protected routes
   if (
