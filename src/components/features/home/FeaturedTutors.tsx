@@ -1,14 +1,11 @@
-"use client";
-
 import Link from "next/link";
-import { useGetTutorsQuery } from "@/lib/redux/api/tutorApi";
+import { fetchTutors } from "@/lib/server-api";
 import TutorCard from "@/components/features/tutors/TutorCard";
-import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import Button from "@/components/ui/Button";
 
-export default function FeaturedTutors() {
-  const { data, isLoading } = useGetTutorsQuery({});
-  const tutors = data?.data?.slice(0, 4) ?? [];
+export default async function FeaturedTutors() {
+  const tutors = await fetchTutors();
+  const featured = tutors.slice(0, 4);
 
   return (
     <section className="py-20">
@@ -29,17 +26,13 @@ export default function FeaturedTutors() {
           </Link>
         </div>
 
-        {isLoading ? (
-          <div className="mt-10 flex justify-center">
-            <LoadingSpinner size="lg" />
-          </div>
-        ) : tutors.length === 0 ? (
+        {featured.length === 0 ? (
           <p className="mt-10 text-center text-slate-500">
             No tutors available yet.
           </p>
         ) : (
           <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {tutors.map((tutor) => (
+            {featured.map((tutor) => (
               <TutorCard key={tutor.id} tutor={tutor} />
             ))}
           </div>

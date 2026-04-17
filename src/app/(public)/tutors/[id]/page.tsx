@@ -1,19 +1,10 @@
-"use client";
-
-import { useState } from "react";
-import { useParams } from "next/navigation";
-import { useGetTutorByIdQuery } from "@/lib/redux/api/tutorApi";
-import { useCreateBookingMutation } from "@/lib/redux/api/bookingApi";
-import { useAuth } from "@/lib/use-auth";
-import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import { notFound } from "next/navigation";
+import { fetchTutorById } from "@/lib/server-api";
+import TutorBookingPanel from "@/components/features/tutors/TutorBookingPanel";
 import Badge from "@/components/ui/Badge";
 import StarRating from "@/components/ui/StarRating";
-import Button from "@/components/ui/Button";
-import Modal from "@/components/ui/Modal";
-import Input from "@/components/ui/Input";
 import { Card, CardBody } from "@/components/ui/Card";
 import { formatDateTime } from "@/lib/utils";
-import toast from "react-hot-toast";
 import {
   MapPin,
   Monitor,
@@ -24,6 +15,7 @@ import {
   BookOpen,
   Award,
 } from "lucide-react";
+import type { Metadata } from "next";
 
 const teachingModeIcon = {
   ONLINE: <Monitor size={16} />,
@@ -37,49 +29,25 @@ const teachingModeLabel = {
   BOTH: "Online & In-Person",
 };
 
-export default function TutorDetailPage() {
-  const { id } = useParams<{ id: string }>();
-  const { user } = useAuth();
-  // Cast to our User type which includes the custom `role` field added by better-auth
-  
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
 
-  const { data, isLoading } = useGetTutorByIdQuery(id);
-  const tutor = data?.data;
-
-  const [bookingOpen, setBookingOpen] = useState(false);
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
-
-  const [createBooking, { isLoading: isBooking }] = useCreateBookingMutation();
-
-  const handleBook = async () => {
-    if (!startTime || !endTime) {
-      toast.error("Please fill in both start and end times.");
-      return;
-    }
-    if (!tutor) return;
-
-    try {
-      await createBooking({
-        tutorId: tutor.id,
-        startTime: new Date(startTime).toISOString(),
-        endTime: new Date(endTime).toISOString(),
-        price: tutor.hourlyRate,
-      }).unwrap();
-      toast.success("Booking confirmed!");
-      setBookingOpen(false);
-      setStartTime("");
-      setEndTime("");
-    } catch {
-      toast.error("Could not create booking. Please try again.");
-    }
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { id } = await params;
+  const tutor = await fetchTutorById(id);
+  if (!tutor) return { title: "Tutor not found" };
+  return {
+    title: `${tutor.user.name} — TutorLink`,
+    description: tutor.headline ?? tutor.bio ?? undefined,
   };
+}
 
-  if (isLoading) return <LoadingSpinner fullPage size="lg" />;
-  if (!tutor)
-    return (
-      <div className="py-20 text-center text-slate-500">Tutor not found.</div>
-    );
+export default async function TutorDetailPage({ params }: PageProps) {
+  const { id } = await params;
+  const tutor = await fetchTutorById(id);
+
+  if (!tutor) notFound();
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
@@ -137,14 +105,15 @@ export default function TutorDetailPage() {
               ${tutor.hourlyRate}
               <span className="text-base font-normal text-slate-400"> / hr</span>
             </span>
-            {user?.role === "STUDENT" && tutor.isAvailable && (
-              <Button onClick={() => setBookingOpen(true)}>Book Session</Button>
-            )}
-            {!user && (
-              <Button onClick={() => (window.location.href = "/login")}>
-                Login to Book
-              </Button>
-            )}
+            {/* Booking controls are client-only (auth state + mutation) */}
+            <TutorBookingPanel
+              tutor={{
+                id: tutor.id,
+                hourlyRate: tutor.hourlyRate,
+                isAvailable: tutor.isAvailable,
+                user: { name: tutor.user.name },
+              }}
+            />
           </div>
         </div>
       </div>
@@ -212,7 +181,6 @@ export default function TutorDetailPage() {
 
         {/* Right sidebar */}
         <div className="flex flex-col gap-4">
-          {/* Subjects */}
           {tutor.categories.length > 0 && (
             <Card>
               <CardBody>
@@ -230,7 +198,6 @@ export default function TutorDetailPage() {
             </Card>
           )}
 
-          {/* Languages */}
           {tutor.languages.length > 0 && (
             <Card>
               <CardBody>
@@ -249,7 +216,6 @@ export default function TutorDetailPage() {
             </Card>
           )}
 
-          {/* Qualification */}
           {tutor.qualification && (
             <Card>
               <CardBody>
@@ -263,41 +229,6 @@ export default function TutorDetailPage() {
           )}
         </div>
       </div>
-
-      {/* Booking Modal */}
-      <Modal
-        open={bookingOpen}
-        onClose={() => setBookingOpen(false)}
-        title={`Book a session with ${tutor.user.name}`}
-      >
-        <div className="flex flex-col gap-4">
-          <Input
-            label="Start Time"
-            type="datetime-local"
-            value={startTime}
-            onChange={(e) => setStartTime(e.target.value)}
-            id="start-time"
-          />
-          <Input
-            label="End Time"
-            type="datetime-local"
-            value={endTime}
-            onChange={(e) => setEndTime(e.target.value)}
-            id="end-time"
-          />
-          <p className="text-sm text-slate-500">
-            Rate: <span className="font-semibold">${tutor.hourlyRate} / hr</span>
-          </p>
-          <div className="flex justify-end gap-3">
-            <Button variant="secondary" onClick={() => setBookingOpen(false)}>
-              Cancel
-            </Button>
-            <Button onClick={handleBook} loading={isBooking}>
-              Confirm Booking
-            </Button>
-          </div>
-        </div>
-      </Modal>
     </div>
   );
 }
