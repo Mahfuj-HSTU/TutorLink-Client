@@ -1,34 +1,36 @@
 "use client";
 
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { useCallback } from "react";
 import { useGetCategoriesQuery } from "@/lib/redux/api/categoryApi";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import { Search, SlidersHorizontal } from "lucide-react";
 
-interface FilterValues {
-  search: string;
-  category: string;
-  minRate: string;
-  maxRate: string;
-}
+export default function TutorFilters() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
-interface TutorFiltersProps {
-  filters: FilterValues;
-  onChange: (filters: FilterValues) => void;
-  onReset: () => void;
-}
-
-export default function TutorFilters({
-  filters,
-  onChange,
-  onReset,
-}: TutorFiltersProps) {
   const { data } = useGetCategoriesQuery();
   const categories = data?.data ?? [];
 
-  const handleChange = (key: keyof FilterValues, value: string) => {
-    onChange({ ...filters, [key]: value });
-  };
+  const updateParam = useCallback(
+    (key: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      if (value) {
+        params.set(key, value);
+      } else {
+        params.delete(key);
+      }
+      router.replace(`${pathname}?${params.toString()}`);
+    },
+    [router, pathname, searchParams]
+  );
+
+  const handleReset = useCallback(() => {
+    router.replace(pathname);
+  }, [router, pathname]);
 
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -47,8 +49,8 @@ export default function TutorFilters({
           <input
             type="text"
             placeholder="Search tutors..."
-            value={filters.search}
-            onChange={(e) => handleChange("search", e.target.value)}
+            value={searchParams.get("search") ?? ""}
+            onChange={(e) => updateParam("search", e.target.value)}
             className="w-full rounded-lg border border-slate-300 py-2 pl-9 pr-3 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
           />
         </div>
@@ -59,8 +61,8 @@ export default function TutorFilters({
             Subject
           </label>
           <select
-            value={filters.category}
-            onChange={(e) => handleChange("category", e.target.value)}
+            value={searchParams.get("category") ?? ""}
+            onChange={(e) => updateParam("category", e.target.value)}
             className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
           >
             <option value="">All subjects</option>
@@ -81,22 +83,22 @@ export default function TutorFilters({
             <Input
               type="number"
               placeholder="Min"
-              value={filters.minRate}
-              onChange={(e) => handleChange("minRate", e.target.value)}
+              value={searchParams.get("minRate") ?? ""}
+              onChange={(e) => updateParam("minRate", e.target.value)}
               min={0}
             />
             <span className="text-slate-400">—</span>
             <Input
               type="number"
               placeholder="Max"
-              value={filters.maxRate}
-              onChange={(e) => handleChange("maxRate", e.target.value)}
+              value={searchParams.get("maxRate") ?? ""}
+              onChange={(e) => updateParam("maxRate", e.target.value)}
               min={0}
             />
           </div>
         </div>
 
-        <Button variant="ghost" size="sm" onClick={onReset}>
+        <Button variant="ghost" size="sm" onClick={handleReset}>
           Reset Filters
         </Button>
       </div>
