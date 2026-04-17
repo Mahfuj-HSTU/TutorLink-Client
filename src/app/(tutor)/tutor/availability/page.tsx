@@ -1,12 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useAuth } from "@/lib/use-auth";
 import {
-  useGetTutorsQuery,
+  useGetMyTutorProfileQuery,
   useUpdateTutorAvailabilityMutation,
 } from "@/lib/redux/api/tutorApi";
-import type { TutorProfile } from "@/types";
 import { Card, CardBody, CardHeader } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
@@ -15,13 +13,8 @@ import toast from "react-hot-toast";
 import { ToggleLeft, ToggleRight } from "lucide-react";
 
 export default function TutorAvailabilityPage() {
-  const { user } = useAuth();
-  const userId = user?.id;
-
-  const { data: tutorsData, isLoading } = useGetTutorsQuery({});
-  const myProfile = (tutorsData?.data ?? []).find(
-    (t: TutorProfile) => t.userId === userId
-  );
+  const { data: profileData, isLoading } = useGetMyTutorProfileQuery();
+  const myProfile = profileData?.data ?? null;
 
   const [isAvailable, setIsAvailable] = useState(true);
 

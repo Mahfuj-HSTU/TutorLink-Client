@@ -23,6 +23,11 @@ export const tutorApi = baseApi.injectEndpoints({
     }),
 
     // ── Tutor-protected ────────────────────────────────────────────────────
+    getMyTutorProfile: builder.query<ApiResponse<TutorProfile | null>, void>({
+      query: () => "/tutors/me",
+      providesTags: ["Tutor"],
+    }),
+
     createTutorProfile: builder.mutation<
       ApiResponse<TutorProfile>,
       CreateTutorProfilePayload
@@ -76,6 +81,7 @@ export const tutorApi = baseApi.injectEndpoints({
 export const {
   useGetTutorsQuery,
   useGetTutorByIdQuery,
+  useGetMyTutorProfileQuery,
   useCreateTutorProfileMutation,
   useUpdateTutorProfileMutation,
   useUpdateTutorCategoriesMutation,

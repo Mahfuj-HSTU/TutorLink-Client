@@ -1,13 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useAuth } from "@/lib/use-auth";
 import { useGetCategoriesQuery } from "@/lib/redux/api/categoryApi";
 import {
-  useGetTutorsQuery,
+  useGetMyTutorProfileQuery,
   useUpdateTutorCategoriesMutation,
 } from "@/lib/redux/api/tutorApi";
-import type { TutorProfile } from "@/types";
 import { Card, CardBody, CardHeader } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
@@ -16,15 +14,10 @@ import toast from "react-hot-toast";
 import { BookOpen } from "lucide-react";
 
 export default function TutorCategoriesPage() {
-  const { user } = useAuth();
-  const userId = user?.id;
-
-  const { data: tutorsData, isLoading: loadingTutors } = useGetTutorsQuery({});
+  const { data: profileData, isLoading: loadingProfile } = useGetMyTutorProfileQuery();
   const { data: categoriesData, isLoading: loadingCats } = useGetCategoriesQuery();
 
-  const myProfile = (tutorsData?.data ?? []).find(
-    (t: TutorProfile) => t.userId === userId
-  );
+  const myProfile = profileData?.data ?? null;
 
   const [selected, setSelected] = useState<Set<string>>(new Set());
 
@@ -55,7 +48,7 @@ export default function TutorCategoriesPage() {
     }
   };
 
-  if (loadingTutors || loadingCats) return <LoadingSpinner fullPage />;
+  if (loadingProfile || loadingCats) return <LoadingSpinner fullPage />;
 
   const categories = categoriesData?.data ?? [];
 
