@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useGetCategoriesQuery } from "@/lib/redux/api/categoryApi";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
@@ -15,22 +15,61 @@ export default function TutorFilters() {
   const { data } = useGetCategoriesQuery();
   const categories = data?.data ?? [];
 
-  const updateParam = useCallback(
-    (key: string, value: string) => {
+  // Local state for typed inputs — avoids re-render on every keystroke
+  const [search, setSearch] = useState(searchParams.get("search") ?? "");
+  const [minRate, setMinRate] = useState(searchParams.get("minRate") ?? "");
+  const [maxRate, setMaxRate] = useState(searchParams.get("maxRate") ?? "");
+
+  // Skip the initial effect run (values are already in the URL)
+  const initialized = useRef(false);
+
+  const buildUrl = useCallback(
+    (overrides: Record<string, string>) => {
       const params = new URLSearchParams(searchParams.toString());
-      if (value) {
-        params.set(key, value);
-      } else {
-        params.delete(key);
+      for (const [key, value] of Object.entries(overrides)) {
+        if (value) params.set(key, value);
+        else params.delete(key);
       }
-      router.replace(`${pathname}?${params.toString()}`);
+      return `${pathname}?${params.toString()}`;
     },
-    [router, pathname, searchParams]
+    [pathname, searchParams]
   );
 
-  const handleReset = useCallback(() => {
+  // Debounce search → URL (400 ms)
+  useEffect(() => {
+    if (!initialized.current) return;
+    const id = setTimeout(() => {
+      router.replace(buildUrl({ search }));
+    }, 400);
+    return () => clearTimeout(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search]);
+
+  // Debounce minRate/maxRate → URL (400 ms)
+  useEffect(() => {
+    if (!initialized.current) return;
+    const id = setTimeout(() => {
+      router.replace(buildUrl({ minRate, maxRate }));
+    }, 400);
+    return () => clearTimeout(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [minRate, maxRate]);
+
+  // Mark initialized after first render
+  useEffect(() => {
+    initialized.current = true;
+  }, []);
+
+  const handleCategoryChange = (value: string) => {
+    router.replace(buildUrl({ category: value }));
+  };
+
+  const handleReset = () => {
+    setSearch("");
+    setMinRate("");
+    setMaxRate("");
     router.replace(pathname);
-  }, [router, pathname]);
+  };
 
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -49,8 +88,8 @@ export default function TutorFilters() {
           <input
             type="text"
             placeholder="Search tutors..."
-            value={searchParams.get("search") ?? ""}
-            onChange={(e) => updateParam("search", e.target.value)}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
             className="w-full rounded-lg border border-slate-300 py-2 pl-9 pr-3 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
           />
         </div>
@@ -62,7 +101,7 @@ export default function TutorFilters() {
           </label>
           <select
             value={searchParams.get("category") ?? ""}
-            onChange={(e) => updateParam("category", e.target.value)}
+            onChange={(e) => handleCategoryChange(e.target.value)}
             className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
           >
             <option value="">All subjects</option>
@@ -83,16 +122,16 @@ export default function TutorFilters() {
             <Input
               type="number"
               placeholder="Min"
-              value={searchParams.get("minRate") ?? ""}
-              onChange={(e) => updateParam("minRate", e.target.value)}
+              value={minRate}
+              onChange={(e) => setMinRate(e.target.value)}
               min={0}
             />
             <span className="text-slate-400">—</span>
             <Input
               type="number"
               placeholder="Max"
-              value={searchParams.get("maxRate") ?? ""}
-              onChange={(e) => updateParam("maxRate", e.target.value)}
+              value={maxRate}
+              onChange={(e) => setMaxRate(e.target.value)}
               min={0}
             />
           </div>
