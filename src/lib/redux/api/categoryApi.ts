@@ -9,6 +9,12 @@ export const categoryApi = baseApi.injectEndpoints({
       providesTags: ["Category"],
     }),
 
+    // Admin: list all categories including inactive
+    getAllCategoriesAdmin: builder.query<ApiResponse<Category[]>, void>({
+      query: () => "/categories/all",
+      providesTags: ["Category"],
+    }),
+
     // Admin: create a new category
     createCategory: builder.mutation<ApiResponse<Category>, CreateCategoryPayload>({
       query: (body) => ({
@@ -45,6 +51,7 @@ export const categoryApi = baseApi.injectEndpoints({
 
 export const {
   useGetCategoriesQuery,
+  useGetAllCategoriesAdminQuery,
   useCreateCategoryMutation,
   useUpdateCategoryMutation,
   useDeleteCategoryMutation,
