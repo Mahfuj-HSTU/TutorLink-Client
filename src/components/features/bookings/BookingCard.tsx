@@ -86,10 +86,23 @@ export default function BookingCard({
         </CardFooter>
       )}
 
-      {/* Student: leave a review after completion */}
+      {/* Student actions */}
+      {viewAs === "student" && booking.status === "CONFIRMED" && onStatusChange && (
+        <CardFooter>
+          <Button
+            size="sm"
+            variant="danger"
+            onClick={() => onStatusChange(booking.id, "CANCELLED")}
+            loading={isUpdating}
+          >
+            Cancel Session
+          </Button>
+        </CardFooter>
+      )}
+
+      {/* Student: leave or edit a review after completion */}
       {viewAs === "student" &&
         booking.status === "COMPLETED" &&
-        !booking.review &&
         onReview && (
           <CardFooter>
             <Button
@@ -97,7 +110,7 @@ export default function BookingCard({
               variant="outline"
               onClick={() => onReview(booking)}
             >
-              Leave a Review
+              {booking.review ? "Edit Review" : "Leave a Review"}
             </Button>
           </CardFooter>
         )}

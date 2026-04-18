@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { useGetMyBookingsQuery } from "@/lib/redux/api/bookingApi";
-import { useCreateReviewMutation } from "@/lib/redux/api/reviewApi";
+import { useGetMyBookingsQuery, useCancelBookingMutation } from "@/lib/redux/api/bookingApi";
+import { useCreateReviewMutation, useUpdateReviewMutation } from "@/lib/redux/api/reviewApi";
 import BookingCard from "@/components/features/bookings/BookingCard";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import Modal from "@/components/ui/Modal";
 import Button from "@/components/ui/Button";
 import StarRating from "@/components/ui/StarRating";
-import type { Booking } from "@/types";
+import type { Booking, BookingStatus } from "@/types";
 import toast from "react-hot-toast";
 import { CalendarDays } from "lucide-react";
 
@@ -20,23 +20,51 @@ export default function StudentBookingsPage() {
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
 
-  const [createReview, { isLoading: isReviewing }] = useCreateReviewMutation();
+  const [createReview, { isLoading: isCreatingReview }] = useCreateReviewMutation();
+  const [updateReview, { isLoading: isUpdatingReview }] = useUpdateReviewMutation();
+  const [cancelBooking, { isLoading: isCancelling }] = useCancelBookingMutation();
+
+  const isReviewing = isCreatingReview || isUpdatingReview;
+
+  const handleOpenReview = (booking: Booking) => {
+    setReviewTarget(booking);
+    setRating(booking.review?.rating ?? 5);
+    setComment(booking.review?.comment ?? "");
+  };
 
   const handleReviewSubmit = async () => {
     if (!reviewTarget) return;
     try {
-      await createReview({
-        rating,
-        comment: comment.trim() || undefined,
-        tutorId: reviewTarget.tutorId,
-        bookingId: reviewTarget.id,
-      }).unwrap();
-      toast.success("Review submitted!");
+      if (reviewTarget.review) {
+        await updateReview({
+          id: reviewTarget.review.id,
+          rating,
+          comment: comment.trim() || undefined,
+        }).unwrap();
+        toast.success("Review updated!");
+      } else {
+        await createReview({
+          rating,
+          comment: comment.trim() || undefined,
+          tutorId: reviewTarget.tutorId,
+          bookingId: reviewTarget.id,
+        }).unwrap();
+        toast.success("Review submitted!");
+      }
       setReviewTarget(null);
       setRating(5);
       setComment("");
     } catch {
-      toast.error("Could not submit review.");
+      toast.error("Could not save review. Please try again.");
+    }
+  };
+
+  const handleStatusChange = async (id: string, _status: BookingStatus) => {
+    try {
+      await cancelBooking(id).unwrap();
+      toast.success("Session cancelled.");
+    } catch {
+      toast.error("Could not cancel booking. Please try again.");
     }
   };
 
@@ -58,7 +86,9 @@ export default function StudentBookingsPage() {
               key={booking.id}
               booking={booking}
               viewAs="student"
-              onReview={setReviewTarget}
+              onStatusChange={handleStatusChange}
+              isUpdating={isCancelling}
+              onReview={handleOpenReview}
             />
           ))}
         </div>
@@ -68,7 +98,7 @@ export default function StudentBookingsPage() {
       <Modal
         open={!!reviewTarget}
         onClose={() => setReviewTarget(null)}
-        title="Leave a Review"
+        title={reviewTarget?.review ? "Edit Your Review" : "Leave a Review"}
       >
         <div className="flex flex-col gap-4">
           <div>
@@ -99,7 +129,7 @@ export default function StudentBookingsPage() {
               Cancel
             </Button>
             <Button onClick={handleReviewSubmit} loading={isReviewing}>
-              Submit Review
+              {reviewTarget?.review ? "Update Review" : "Submit Review"}
             </Button>
           </div>
         </div>
