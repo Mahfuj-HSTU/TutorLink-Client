@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useGetMyBookingsQuery, useCancelBookingMutation } from "@/lib/redux/api/bookingApi";
+import { useGetMyBookingsQuery, useUpdateBookingStatusMutation } from "@/lib/redux/api/bookingApi";
 import { useCreateReviewMutation, useUpdateReviewMutation } from "@/lib/redux/api/reviewApi";
 import BookingCard from "@/components/features/bookings/BookingCard";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
@@ -22,7 +22,7 @@ export default function StudentBookingsPage() {
 
   const [createReview, { isLoading: isCreatingReview }] = useCreateReviewMutation();
   const [updateReview, { isLoading: isUpdatingReview }] = useUpdateReviewMutation();
-  const [cancelBooking, { isLoading: isCancelling }] = useCancelBookingMutation();
+  const [updateStatus, { isLoading: isCancelling }] = useUpdateBookingStatusMutation();
 
   const isReviewing = isCreatingReview || isUpdatingReview;
 
@@ -59,9 +59,9 @@ export default function StudentBookingsPage() {
     }
   };
 
-  const handleStatusChange = async (id: string, _status: BookingStatus) => {
+  const handleStatusChange = async (id: string, status: BookingStatus) => {
     try {
-      await cancelBooking(id).unwrap();
+      await updateStatus({ id, status }).unwrap();
       toast.success("Session cancelled.");
     } catch {
       toast.error("Could not cancel booking. Please try again.");

@@ -38,14 +38,6 @@ export const bookingApi = baseApi.injectEndpoints({
       invalidatesTags: ["Booking"],
     }),
 
-    // Student: cancel own booking
-    cancelBooking: builder.mutation<ApiResponse<Booking>, string>({
-      query: (id) => ({
-        url: `/bookings/${id}/cancel`,
-        method: "PATCH",
-      }),
-      invalidatesTags: ["Booking"],
-    }),
   }),
 });
 
@@ -54,5 +46,4 @@ export const {
   useGetMyBookingsQuery,
   useGetTutorBookingsQuery,
   useUpdateBookingStatusMutation,
-  useCancelBookingMutation,
 } = bookingApi;
