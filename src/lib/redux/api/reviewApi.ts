@@ -13,6 +13,19 @@ export const reviewApi = baseApi.injectEndpoints({
       invalidatesTags: ["Review", "Tutor", "Booking"],
     }),
 
+    // Student: edit an existing review
+    updateReview: builder.mutation<
+      ApiResponse<Review>,
+      { id: string; rating: number; comment?: string }
+    >({
+      query: ({ id, ...body }) => ({
+        url: `/reviews/${id}`,
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: ["Review", "Tutor", "Booking"],
+    }),
+
     // Public: fetch all reviews for a tutor
     getReviewsByTutor: builder.query<ApiResponse<Review[]>, string>({
       query: (tutorId) => `/reviews/tutor/${tutorId}`,
@@ -21,4 +34,8 @@ export const reviewApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useCreateReviewMutation, useGetReviewsByTutorQuery } = reviewApi;
+export const {
+  useCreateReviewMutation,
+  useUpdateReviewMutation,
+  useGetReviewsByTutorQuery,
+} = reviewApi;
