@@ -36,7 +36,7 @@ export default async function CategoriesSection() {
 
         <div className="mt-10 text-center">
           <Link
-            href="/tutors"
+            href="/subjects"
             className="text-sm font-medium text-indigo-600 hover:underline"
           >
             View all subjects →

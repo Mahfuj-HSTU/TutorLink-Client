@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import Button from '@/components/ui/Button'
 import { useAuth } from '@/lib/use-auth'
+import { useState, useEffect } from 'react'
 import {
   Search,
   Star,
@@ -95,7 +96,13 @@ const CONTENT: Record<string, HeroContent> = {
 
 export default function HeroSection() {
   const { user } = useAuth()
-  const content = user ? (CONTENT[user.role] ?? CONTENT.GUEST) : CONTENT.GUEST
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+
+  // Always render GUEST content on the server / before mount to avoid
+  // the "state update on a component that hasn't mounted yet" warning
+  // from better-auth's useSession firing during SSR.
+  const content = mounted && user ? (CONTENT[user.role] ?? CONTENT.GUEST) : CONTENT.GUEST
 
   return (
     <section className='relative overflow-hidden bg-linear-to-br from-indigo-100 via-white to-purple-100 py-20 sm:py-28'>
