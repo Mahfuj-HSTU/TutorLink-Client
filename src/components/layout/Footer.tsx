@@ -1,12 +1,94 @@
+'use client'
+
 import Link from 'next/link'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { Mail, ExternalLink, Globe } from 'lucide-react'
+import { useAuth } from '@/lib/use-auth'
+import { useState, useEffect } from 'react'
+
+type Role = 'GUEST' | 'STUDENT' | 'TUTOR' | 'ADMIN'
+
+interface NavLink {
+  label: string
+  href: string
+  // null = public (anyone can visit). Otherwise only these roles may visit.
+  allowedRoles: Role[] | null
+}
+
+const ROLE_LABEL: Record<Role, string> = {
+  GUEST: 'a guest',
+  STUDENT: 'a Student',
+  TUTOR: 'a Tutor',
+  ADMIN: 'an Admin',
+}
+
+const LEARNER_LINKS: NavLink[] = [
+  { label: 'Find a Tutor',       href: '/tutors',     allowedRoles: null },
+  { label: 'Browse Subjects',    href: '/subjects',   allowedRoles: null },
+  { label: 'How It Works',       href: '/#how-it-works', allowedRoles: null },
+  { label: 'Student Dashboard',  href: '/dashboard',  allowedRoles: ['STUDENT'] },
+  { label: 'My Bookings',        href: '/bookings',   allowedRoles: ['STUDENT'] },
+]
+
+const TUTOR_LINKS: NavLink[] = [
+  { label: 'Become a Tutor',  href: '/register',          allowedRoles: ['GUEST', 'STUDENT'] },
+  { label: 'Tutor Dashboard', href: '/tutor/dashboard',   allowedRoles: ['TUTOR'] },
+  { label: 'Manage Profile',  href: '/tutor/profile',     allowedRoles: ['TUTOR'] },
+  { label: 'My Bookings',     href: '/tutor/bookings',    allowedRoles: ['TUTOR'] },
+]
 
 export default function Footer() {
+  const { user } = useAuth()
+  const router = useRouter()
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+
+  const role: Role = mounted && user ? (user.role as Role) : 'GUEST'
+
+  const handleClick = (item: NavLink) => {
+    // Public link — always navigate
+    if (item.allowedRoles === null) {
+      router.push(item.href)
+      return
+    }
+
+    // Not logged in — redirect to login
+    if (!mounted || !user) {
+      router.push(`/login?callbackUrl=${encodeURIComponent(item.href)}`)
+      return
+    }
+
+    // Role matches — navigate
+    if (item.allowedRoles.includes(role)) {
+      router.push(item.href)
+      return
+    }
+
+    // Role mismatch — redirect to /unauthorized with context
+    const requiredRole = item.allowedRoles.find((r) => r !== 'GUEST') ?? ''
+    router.push(
+      `/unauthorized?page=${encodeURIComponent(item.label)}&requiredRole=${requiredRole}`
+    )
+  }
+
+  const renderLinks = (links: NavLink[]) =>
+    links.map((item) => (
+      <li key={item.label}>
+        <button
+          onClick={() => handleClick(item)}
+          className='text-left text-sm text-slate-500 transition-colors hover:text-indigo-600'
+        >
+          {item.label}
+        </button>
+      </li>
+    ))
+
   return (
     <footer className='border-t border-slate-200 bg-slate-50'>
       <div className='mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8'>
         <div className='grid grid-cols-1 gap-8 md:grid-cols-4'>
+          {/* Brand */}
           <div className='col-span-1 md:col-span-2'>
             <Link href='/'>
               <Image
@@ -40,47 +122,16 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Learners */}
+          {/* For Learners */}
           <div>
-            <h3 className='text-sm font-semibold text-slate-900'>
-              For Learners
-            </h3>
-            <ul className='mt-3 space-y-2'>
-              {[
-                { label: 'Find a Tutor', href: '/tutors' },
-                { label: 'How It Works', href: '/#how-it-works' },
-                { label: 'Student Dashboard', href: '/dashboard' },
-                { label: 'My Bookings', href: '/bookings' }
-              ].map((item) => (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    className='text-sm text-slate-500 hover:text-indigo-600 transition-colors'>
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            <h3 className='text-sm font-semibold text-slate-900'>For Learners</h3>
+            <ul className='mt-3 space-y-2'>{renderLinks(LEARNER_LINKS)}</ul>
           </div>
 
+          {/* For Tutors */}
           <div>
             <h3 className='text-sm font-semibold text-slate-900'>For Tutors</h3>
-            <ul className='mt-3 space-y-2'>
-              {[
-                { label: 'Become a Tutor', href: '/register' },
-                { label: 'Tutor Dashboard', href: '/tutor/dashboard' },
-                { label: 'Manage Profile', href: '/tutor/profile' },
-                { label: 'Availability', href: '/tutor/availability' }
-              ].map((item) => (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    className='text-sm text-slate-500 hover:text-indigo-600 transition-colors'>
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            <ul className='mt-3 space-y-2'>{renderLinks(TUTOR_LINKS)}</ul>
           </div>
         </div>
 
