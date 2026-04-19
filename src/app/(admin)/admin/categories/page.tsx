@@ -200,7 +200,6 @@ export default function AdminCategoriesPage() {
                     ? 'border-slate-200'
                     : 'border-slate-200 opacity-60'
                 )}>
-                {/* Status badge — top-right corner */}
                 <span
                   className={cn(
                     'absolute right-0 top-0 rounded-bl-lg rounded-tr-lg px-2.5 py-1 text-xs font-semibold overflow-hidden text-white',

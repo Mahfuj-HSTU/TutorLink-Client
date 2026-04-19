@@ -1,95 +1,97 @@
-"use client";
+/* eslint-disable react-hooks/set-state-in-effect */
+'use client'
 
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react'
 import {
   useGetMyTutorProfileQuery,
-  useUpdateTutorAvailabilityMutation,
-} from "@/lib/redux/api/tutorApi";
-import { Card, CardBody, CardHeader } from "@/components/ui/Card";
-import Button from "@/components/ui/Button";
-import Badge from "@/components/ui/Badge";
-import LoadingSpinner from "@/components/ui/LoadingSpinner";
-import toast from "react-hot-toast";
-import { ToggleLeft, ToggleRight } from "lucide-react";
+  useUpdateTutorAvailabilityMutation
+} from '@/lib/redux/api/tutorApi'
+import { Card, CardBody, CardHeader } from '@/components/ui/Card'
+import Button from '@/components/ui/Button'
+import Badge from '@/components/ui/Badge'
+import LoadingSpinner from '@/components/ui/LoadingSpinner'
+import toast from 'react-hot-toast'
+import { ToggleLeft, ToggleRight } from 'lucide-react'
 
 export default function TutorAvailabilityPage() {
-  const { data: profileData, isLoading } = useGetMyTutorProfileQuery();
-  const myProfile = profileData?.data ?? null;
+  const { data: profileData, isLoading } = useGetMyTutorProfileQuery()
+  const myProfile = profileData?.data ?? null
 
-  const [isAvailable, setIsAvailable] = useState(true);
+  const [isAvailable, setIsAvailable] = useState(true)
 
   useEffect(() => {
     if (myProfile) {
-      setIsAvailable(myProfile.isAvailable);
+      setIsAvailable(myProfile.isAvailable)
     }
-  }, [myProfile]);
+  }, [myProfile])
 
   const [updateAvailability, { isLoading: isSaving }] =
-    useUpdateTutorAvailabilityMutation();
+    useUpdateTutorAvailabilityMutation()
 
   const handleToggle = async () => {
-    const next = !isAvailable;
-    setIsAvailable(next);
+    const next = !isAvailable
+    setIsAvailable(next)
     try {
-      await updateAvailability({ isAvailable: next }).unwrap();
-      toast.success(next ? "You are now available." : "You are now unavailable.");
+      await updateAvailability({ isAvailable: next }).unwrap()
+      toast.success(
+        next ? 'You are now available.' : 'You are now unavailable.'
+      )
     } catch {
-      setIsAvailable(!next); // revert
-      toast.error("Could not update availability.");
+      setIsAvailable(!next) // revert
+      toast.error('Could not update availability.')
     }
-  };
+  }
 
-  if (isLoading) return <LoadingSpinner fullPage />;
+  if (isLoading) return <LoadingSpinner fullPage />
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-slate-900">
-        Availability
-      </h1>
+      <h1 className='mb-6 text-2xl font-bold text-slate-900'>Availability</h1>
 
-      <Card className="max-w-md">
+      <Card className='max-w-md'>
         <CardHeader>
-          <h2 className="font-semibold text-slate-900">
-            Current Status
-          </h2>
+          <h2 className='font-semibold text-slate-900'>Current Status</h2>
         </CardHeader>
-        <CardBody className="flex flex-col items-center gap-6 py-8">
+        <CardBody className='flex flex-col items-center gap-6 py-8'>
           {/* Visual toggle */}
           <div
             className={`flex h-24 w-24 items-center justify-center rounded-full transition-colors ${
-              isAvailable ? "bg-emerald-100" : "bg-slate-100"
-            }`}
-          >
+              isAvailable ? 'bg-emerald-100' : 'bg-slate-100'
+            }`}>
             {isAvailable ? (
-              <ToggleRight size={48} className="text-emerald-600" />
+              <ToggleRight
+                size={48}
+                className='text-emerald-600'
+              />
             ) : (
-              <ToggleLeft size={48} className="text-slate-400" />
+              <ToggleLeft
+                size={48}
+                className='text-slate-400'
+              />
             )}
           </div>
 
-          <div className="text-center">
+          <div className='text-center'>
             <Badge
-              variant={isAvailable ? "success" : "default"}
-              className="mb-2 text-sm"
-            >
-              {isAvailable ? "Available for Bookings" : "Not Available"}
+              variant={isAvailable ? 'success' : 'default'}
+              className='mb-2 text-sm'>
+              {isAvailable ? 'Available for Bookings' : 'Not Available'}
             </Badge>
-            <p className="text-sm text-slate-500">
+            <p className='text-sm text-slate-500'>
               {isAvailable
-                ? "Students can currently book sessions with you."
-                : "Your profile is hidden from new booking requests."}
+                ? 'Students can currently book sessions with you.'
+                : 'Your profile is hidden from new booking requests.'}
             </p>
           </div>
 
           <Button
-            variant={isAvailable ? "danger" : "primary"}
+            variant={isAvailable ? 'danger' : 'primary'}
             onClick={handleToggle}
-            loading={isSaving}
-          >
-            {isAvailable ? "Set as Unavailable" : "Set as Available"}
+            loading={isSaving}>
+            {isAvailable ? 'Set as Unavailable' : 'Set as Available'}
           </Button>
         </CardBody>
       </Card>
     </div>
-  );
+  )
 }

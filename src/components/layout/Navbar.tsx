@@ -16,7 +16,6 @@ const dashboardHref: Record<string, string> = {
   ADMIN: '/admin/dashboard'
 }
 
-// Primary nav link shown beside the logo — varies by role
 const primaryNavLink: Record<string, { label: string; href: string }> = {
   STUDENT: { label: 'Find Tutors', href: '/tutors' },
   TUTOR: { label: 'My Bookings', href: '/tutor/bookings' },
@@ -26,7 +25,6 @@ const primaryNavLink: Record<string, { label: string; href: string }> = {
 export default function Navbar() {
   const router = useRouter()
   const { user } = useAuth()
-
   const [mobileOpen, setMobileOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
 
@@ -39,7 +37,6 @@ export default function Navbar() {
   return (
     <header className='sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur supports-backdrop-filter:bg-white/60'>
       <nav className='mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8'>
-        {/* Logo */}
         <Link href='/'>
           <Image
             src='/logo.png'
@@ -51,7 +48,6 @@ export default function Navbar() {
           />
         </Link>
 
-        {/* Desktop nav */}
         <div className='hidden items-center gap-6 md:flex'>
           {(() => {
             const link = user
@@ -72,8 +68,7 @@ export default function Navbar() {
                 onClick={() => setDropdownOpen((v) => !v)}
                 className='flex items-center gap-2 rounded-full bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-100 transition-colors'>
                 {user.image ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
+                  <Image
                     src={user.image}
                     alt={user.name}
                     className='h-6 w-6 rounded-full object-cover'
@@ -94,9 +89,6 @@ export default function Navbar() {
                     onClick={() => setDropdownOpen(false)}
                   />
                   <div className='absolute right-0 top-full mt-2 w-48 rounded-xl border border-slate-200 bg-white py-1 shadow-lg'>
-                    {/* <div className='px-4 py-2 text-xs text-slate-400'>
-                      {user.email}
-                    </div> */}
                     <hr className='my-1 border-slate-200' />
                     <Link
                       href={dashboardHref[user.role] ?? '/dashboard'}
@@ -135,7 +127,6 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* Mobile menu button */}
         <button
           onClick={() => setMobileOpen((v) => !v)}
           className='rounded-lg p-2 text-slate-600 hover:bg-slate-100 md:hidden'>
@@ -143,7 +134,6 @@ export default function Navbar() {
         </button>
       </nav>
 
-      {/* Mobile menu */}
       <div
         className={cn(
           'overflow-hidden transition-all duration-300 md:hidden',
