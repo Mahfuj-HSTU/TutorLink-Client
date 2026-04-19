@@ -5,7 +5,7 @@ import { Card, CardBody, CardFooter } from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import { formatDateTime } from "@/lib/utils";
-import { CalendarDays, Clock, DollarSign } from "lucide-react";
+import { CalendarDays, Clock } from "lucide-react";
 
 const statusVariant: Record<BookingStatus, "success" | "warning" | "danger"> = {
   CONFIRMED: "warning",
@@ -46,9 +46,8 @@ export default function BookingCard({
             </Badge>
           </div>
           <div className="text-right">
-            <span className="flex items-center gap-1 text-sm font-bold text-indigo-700">
-              <DollarSign size={14} />
-              {booking.price.toFixed(2)}
+            <span className="text-sm font-bold text-indigo-700">
+              ৳{booking.price.toFixed(0)}
             </span>
           </div>
         </div>

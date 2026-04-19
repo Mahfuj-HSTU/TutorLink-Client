@@ -90,7 +90,7 @@ export default function TutorCard({ tutor }: TutorCardProps) {
       {/* Footer */}
       <div className="border-t border-slate-200 px-5 py-3 text-right">
         <span className="text-sm font-bold text-indigo-700">
-          ${tutor.hourlyRate}
+          ৳{tutor.hourlyRate}
           <span className="text-xs font-normal text-slate-400"> / hr</span>
         </span>
       </div>

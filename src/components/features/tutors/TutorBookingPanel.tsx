@@ -313,7 +313,7 @@ export default function TutorBookingPanel({ tutor }: Props) {
 
           <p className="text-sm text-slate-500">
             Rate:{" "}
-            <span className="font-semibold">${tutor.hourlyRate} / hr</span>
+            <span className="font-semibold">৳{tutor.hourlyRate} / hr</span>
           </p>
 
           <div className="flex justify-end gap-3">

@@ -7,7 +7,7 @@ import { Card, CardBody } from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
-import { CalendarDays, CheckCircle, XCircle, DollarSign } from "lucide-react";
+import { CalendarDays, CheckCircle, XCircle, Banknote } from "lucide-react";
 
 export default function TutorDashboardPage() {
   const { user } = useAuth();
@@ -59,8 +59,8 @@ export default function TutorDashboardPage() {
           },
           {
             label: "Total Earnings",
-            value: `$${earnings.toFixed(0)}`,
-            icon: DollarSign,
+            value: `৳${earnings.toFixed(0)}`,
+            icon: Banknote,
             color: "text-indigo-600 bg-indigo-50",
           },
         ].map(({ label, value, icon: Icon, color }) => (
@@ -115,7 +115,7 @@ export default function TutorDashboardPage() {
                   </div>
                   <div className="flex items-center gap-3">
                     <span className="text-sm font-semibold text-indigo-700">
-                      ${booking.price}
+                      ৳{booking.price}
                     </span>
                     <Badge
                       variant={

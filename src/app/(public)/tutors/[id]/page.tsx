@@ -102,7 +102,7 @@ export default async function TutorDetailPage({ params }: PageProps) {
 
           <div className="mt-4 flex items-center gap-4">
             <span className="text-2xl font-bold text-indigo-700">
-              ${tutor.hourlyRate}
+              ৳{tutor.hourlyRate}
               <span className="text-base font-normal text-slate-400"> / hr</span>
             </span>
             {/* Booking controls are client-only (auth state + mutation) */}

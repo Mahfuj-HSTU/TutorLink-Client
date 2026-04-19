@@ -24,7 +24,7 @@ import {
   Clock,
   Award,
   BookOpen,
-  DollarSign,
+  Banknote,
   Star,
   Users,
 } from "lucide-react";
@@ -195,7 +195,7 @@ export default function TutorProfilePage() {
           {/* Stats row */}
           <div className="mt-5 grid grid-cols-3 gap-3 border-t border-white/20 pt-5">
             <div className="text-center">
-              <p className="text-2xl font-bold">${myProfile.hourlyRate}</p>
+              <p className="text-2xl font-bold">৳{myProfile.hourlyRate}</p>
               <p className="text-xs text-indigo-200">per hour</p>
             </div>
             <div className="text-center border-x border-white/20">
@@ -361,13 +361,13 @@ export default function TutorProfilePage() {
           </h2>
           <div className="grid grid-cols-2 gap-4">
             <div className="relative">
-              <DollarSign
+              <Banknote
                 size={15}
                 className="absolute left-3 top-[38px] text-slate-400"
               />
               <Input
                 id="rate"
-                label="Hourly Rate"
+                label="Hourly Rate (৳)"
                 type="number"
                 min={0}
                 value={form.hourlyRate}
