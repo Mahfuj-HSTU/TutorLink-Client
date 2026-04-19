@@ -17,7 +17,6 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import toast from 'react-hot-toast'
 import {
   Pencil,
-  X,
   MapPin,
   Monitor,
   Laptop,
@@ -83,7 +82,7 @@ export default function TutorProfilePage() {
 
   const handleChange = (
     key: keyof CreateTutorProfilePayload,
-    value: string | number | string[]
+    value: string | number | string[] | undefined
   ) => setForm((prev) => ({ ...prev, [key]: value }))
 
   const addLanguage = () => {
@@ -337,25 +336,15 @@ export default function TutorProfilePage() {
 
   return (
     <div className='max-w-2xl'>
-      <div className='mb-6 flex items-center justify-between'>
-        <div>
-          <h1 className='text-2xl font-bold text-slate-900'>
-            {myProfile ? 'Edit Profile' : 'Create Your Profile'}
-          </h1>
-          <p className='mt-1 text-sm text-slate-500'>
-            {myProfile
-              ? 'Update your public tutor profile.'
-              : 'Set up your profile so students can find and book you.'}
-          </p>
-        </div>
-        {myProfile && (
-          <button
-            onClick={handleCancel}
-            className='flex items-center gap-1.5 rounded-xl border border-slate-200 px-3 py-1.5 text-sm text-slate-500 transition hover:border-slate-300 hover:text-slate-700'>
-            <X size={14} />
-            Cancel
-          </button>
-        )}
+      <div className='mb-6'>
+        <h1 className='text-2xl font-bold text-slate-900'>
+          {myProfile ? 'Edit Profile' : 'Create Your Profile'}
+        </h1>
+        <p className='mt-1 text-sm text-slate-500'>
+          {myProfile
+            ? 'Update your public tutor profile.'
+            : 'Set up your profile so students can find and book you.'}
+        </p>
       </div>
 
       <form
@@ -403,9 +392,13 @@ export default function TutorProfilePage() {
                 label='Hourly Rate (৳)'
                 type='number'
                 min={0}
-                value={form.hourlyRate}
+                placeholder='e.g. 500'
+                value={form.hourlyRate || ''}
                 onChange={(e) =>
-                  handleChange('hourlyRate', Number(e.target.value))
+                  handleChange(
+                    'hourlyRate',
+                    e.target.value === '' ? 0 : Number(e.target.value)
+                  )
                 }
                 required
                 className='pl-8'
@@ -421,9 +414,13 @@ export default function TutorProfilePage() {
                 label='Years of Experience'
                 type='number'
                 min={0}
+                placeholder='e.g. 3'
                 value={form.experience ?? ''}
                 onChange={(e) =>
-                  handleChange('experience', Number(e.target.value))
+                  handleChange(
+                    'experience',
+                    e.target.value === '' ? undefined : Number(e.target.value)
+                  )
                 }
                 className='pl-8'
               />
