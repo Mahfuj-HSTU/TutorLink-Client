@@ -89,7 +89,6 @@ export default function Navbar() {
                     onClick={() => setDropdownOpen(false)}
                   />
                   <div className='absolute right-0 top-full mt-2 w-48 rounded-xl border border-slate-200 bg-white py-1 shadow-lg'>
-                    <hr className='my-1 border-slate-200' />
                     <Link
                       href={dashboardHref[user.role] ?? '/dashboard'}
                       onClick={() => setDropdownOpen(false)}
@@ -97,11 +96,13 @@ export default function Navbar() {
                       Dashboard
                     </Link>
                     <hr className='my-1 border-slate-200' />
-                    <button
+                    <Button
                       onClick={handleSignOut}
-                      className='w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 transition-colors'>
+                      variant='ghost'
+                      size='sm'
+                      className='w-full px-4 py-2 justify-start text-sm text-red-600 hover:bg-red-50 transition-colors'>
                       Sign Out
-                    </button>
+                    </Button>
                   </div>
                 </>
               )}
