@@ -62,7 +62,7 @@ export default function Navbar() {
             )
           })()}
 
-          {!user && (
+          {user?.role !== 'TUTOR' && (
             <Link
               href='/teach-with-us'
               className='text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors'>
@@ -162,7 +162,7 @@ export default function Navbar() {
               </Link>
             )
           })()}
-          {!user && (
+          {user?.role !== 'TUTOR' && (
             <Link
               href='/teach-with-us'
               onClick={() => setMobileOpen(false)}
