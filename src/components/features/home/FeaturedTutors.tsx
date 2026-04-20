@@ -5,7 +5,7 @@ import Button from "@/components/ui/Button";
 
 export default async function FeaturedTutors() {
   const tutors = await fetchTutors();
-  const featured = tutors.slice(0, 4);
+  const featured = [...tutors].sort((a, b) => b.rating - a.rating).slice(0, 4);
 
   return (
     <section className="py-20">
