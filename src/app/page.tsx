@@ -18,8 +18,8 @@ export default function HomePage() {
         <HeroSection />
         <HowItWorks />
         <CategoriesSection />
-        <PlatformFeatures />
         <FeaturedTutors />
+        <PlatformFeatures />
         <Testimonials />
       </main>
       <Footer />
