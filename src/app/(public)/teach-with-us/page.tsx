@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import Button from '@/components/ui/Button'
-import { fetchPlatformStats } from '@/lib/server-api'
+import { fetchPlatformStats, fetchFeaturedTutor } from '@/lib/server-api'
 import {
   DollarSign,
   Clock,
@@ -85,15 +85,25 @@ const highlights = [
 ]
 
 export default async function TeachWithUsPage() {
-  const stats = await fetchPlatformStats()
+  const [stats, featured] = await Promise.all([
+    fetchPlatformStats(),
+    fetchFeaturedTutor()
+  ])
   const rateFloor = Math.floor(stats.avgHourlyRate / 10) * 10
-  const rateRange = stats.avgHourlyRate ? `৳${rateFloor}–৳${rateFloor + 20}` : '—'
+  const rateRange = stats.avgHourlyRate
+    ? `৳${rateFloor}–৳${rateFloor + 20}`
+    : '—'
+
+  const maxActivity = featured ? Math.max(...featured.weeklyActivity, 1) : 1
+  const barHeights = featured
+    ? featured.weeklyActivity.map((v) =>
+        v === 0 ? 4 : Math.max(Math.round((v / maxActivity) * 100), 12)
+      )
+    : [45, 70, 50, 85, 60, 95, 75]
 
   return (
     <div className='overflow-hidden'>
-
-      {/* ── Hero ─────────────────────────────────────────── */}
-      <section className='relative bg-linear-to-br from-slate-900 via-indigo-950 to-slate-900 py-24 sm:py-32'>
+      <section className='relative bg-linear-to-br from-slate-900 via-indigo-950 to-slate-900 py-24'>
         <div className='pointer-events-none absolute inset-0'>
           <div className='absolute -left-40 -top-40 h-[500px] w-[500px] rounded-full bg-indigo-600/20 blur-3xl' />
           <div className='absolute -bottom-40 -right-20 h-[400px] w-[400px] rounded-full bg-purple-600/20 blur-3xl' />
@@ -101,11 +111,12 @@ export default async function TeachWithUsPage() {
 
         <div className='relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
           <div className='grid items-center gap-16 lg:grid-cols-2'>
-
-            {/* Left — copy */}
             <div>
               <span className='inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-sm font-medium text-indigo-200 backdrop-blur'>
-                <Sparkles size={13} className='text-indigo-300' />
+                <Sparkles
+                  size={13}
+                  className='text-indigo-300'
+                />
                 Join {fmt(stats.tutorCount)} tutors already earning
               </span>
               <h1 className='mt-6 text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl'>
@@ -146,14 +157,16 @@ export default async function TeachWithUsPage() {
                   <span
                     key={text}
                     className='flex items-center gap-2 text-sm text-slate-400'>
-                    <Icon size={15} className='text-indigo-400' />
+                    <Icon
+                      size={15}
+                      className='text-indigo-400'
+                    />
                     {text}
                   </span>
                 ))}
               </div>
             </div>
 
-            {/* Right — earnings card */}
             <div className='relative hidden lg:block'>
               <div className='absolute -inset-4 rounded-3xl bg-indigo-500/10 blur-2xl' />
               <div className='relative rounded-2xl border border-white/10 bg-white/5 p-1 backdrop-blur'>
@@ -161,85 +174,131 @@ export default async function TeachWithUsPage() {
                   <div className='flex items-center justify-between'>
                     <div>
                       <p className='text-xs font-medium uppercase tracking-wider text-slate-400'>
-                        Monthly Earnings
+                        This Month&apos;s Earnings
                       </p>
                       <p className='mt-1 text-4xl font-extrabold text-white'>
-                        ৳18,400
+                        {featured
+                          ? `৳${featured.monthlyEarnings.toLocaleString()}`
+                          : '—'}
                       </p>
                     </div>
                     <span className='flex items-center gap-1 rounded-full bg-emerald-500/15 px-3 py-1 text-sm font-semibold text-emerald-400'>
                       <TrendingUp size={13} />
-                      +18%
+                      Est.
                     </span>
                   </div>
 
                   <div className='mt-6 grid grid-cols-3 gap-4 border-t border-white/10 pt-5'>
                     {[
-                      { value: '24', label: 'Sessions' },
-                      { value: '12', label: 'Students' },
-                      { value: '4.9★', label: 'Rating' }
+                      {
+                        value: featured
+                          ? String(featured.monthlySessionCount)
+                          : '—',
+                        label: 'Sessions'
+                      },
+                      {
+                        value: featured
+                          ? String(featured.monthlyStudentCount)
+                          : '—',
+                        label: 'Students'
+                      },
+                      {
+                        value: featured
+                          ? `${featured.rating.toFixed(1)}★`
+                          : '—',
+                        label: 'Rating'
+                      }
                     ].map((s) => (
                       <div key={s.label}>
-                        <p className='text-xl font-bold text-white'>{s.value}</p>
-                        <p className='mt-0.5 text-xs text-slate-400'>{s.label}</p>
+                        <p className='text-xl font-bold text-white'>
+                          {s.value}
+                        </p>
+                        <p className='mt-0.5 text-xs text-slate-400'>
+                          {s.label}
+                        </p>
                       </div>
                     ))}
                   </div>
 
                   <div className='mt-5 border-t border-white/10 pt-5'>
                     <p className='mb-3 text-xs font-medium text-slate-400'>
-                      Weekly activity
+                      Last 7 days
                     </p>
                     <div className='flex items-end gap-1.5 h-12'>
-                      {[45, 70, 50, 85, 60, 95, 75].map((h, i) => (
+                      {barHeights.map((h, i) => (
                         <div
                           key={i}
-                          className={`flex-1 rounded-t transition-all ${i === 5 ? 'bg-indigo-400' : 'bg-slate-600'}`}
+                          className={`flex-1 rounded-t ${barHeights[i] === Math.max(...barHeights) ? 'bg-indigo-400' : 'bg-slate-600'}`}
                           style={{ height: `${h}%` }}
                         />
                       ))}
                     </div>
                     <div className='mt-1.5 flex justify-between text-xs text-slate-500'>
                       {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d, i) => (
-                        <span key={i} className='flex-1 text-center'>{d}</span>
+                        <span
+                          key={i}
+                          className='flex-1 text-center'>
+                          {d}
+                        </span>
                       ))}
                     </div>
                   </div>
 
                   <div className='mt-5 flex items-center gap-3 rounded-xl bg-indigo-500/10 px-4 py-3'>
                     <div className='flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-indigo-500/20 text-sm font-bold text-indigo-300'>
-                      R
+                      {featured ? featured.displayName[0].toUpperCase() : '?'}
                     </div>
                     <div className='min-w-0'>
-                      <p className='text-sm font-medium text-white'>Rafiqul I.</p>
-                      <p className='text-xs text-slate-400'>Physics · 3 yrs on TutorLink</p>
+                      <p className='text-sm font-medium text-white'>
+                        {featured?.displayName ?? 'Top Tutor'}
+                      </p>
+                      <p className='text-xs text-slate-400'>
+                        {featured
+                          ? `${featured.subject} · ${featured.monthsOnPlatform} mo. on TutorLink`
+                          : 'Join the platform'}
+                      </p>
                     </div>
                     <div className='ml-auto text-right'>
-                      <p className='text-sm font-bold text-emerald-400'>৳750/hr</p>
+                      <p className='text-sm font-bold text-emerald-400'>
+                        {featured ? `৳${featured.hourlyRate}/hr` : '—'}
+                      </p>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </section>
 
-      {/* ── Stats bar ────────────────────────────────────── */}
       <section className='border-y border-slate-200 bg-white'>
         <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
           <div className='grid grid-cols-2 divide-x divide-y divide-slate-200 sm:grid-cols-4 sm:divide-y-0'>
             {[
-              { value: fmt(stats.tutorCount), label: 'Active Tutors', icon: GraduationCap },
-              { value: fmt(stats.studentCount), label: 'Students Taught', icon: Users },
+              {
+                value: fmt(stats.tutorCount),
+                label: 'Active Tutors',
+                icon: GraduationCap
+              },
+              {
+                value: fmt(stats.studentCount),
+                label: 'Students Taught',
+                icon: Users
+              },
               { value: rateRange, label: 'Avg. Hourly Rate', icon: DollarSign },
-              { value: stats.avgRating ? `${stats.avgRating.toFixed(1)}★` : '—', label: 'Tutor Satisfaction', icon: Star }
+              {
+                value: stats.avgRating ? `${stats.avgRating.toFixed(1)}★` : '—',
+                label: 'Tutor Satisfaction',
+                icon: Star
+              }
             ].map(({ value, label, icon: Icon }) => (
               <div
                 key={label}
                 className='flex flex-col items-center gap-1 py-8 text-center'>
-                <Icon size={18} className='text-indigo-400' />
+                <Icon
+                  size={18}
+                  className='text-indigo-400'
+                />
                 <p className='mt-1 text-3xl font-extrabold text-slate-900'>
                   {value}
                 </p>
@@ -250,12 +309,14 @@ export default async function TeachWithUsPage() {
         </div>
       </section>
 
-      {/* ── Benefits ─────────────────────────────────────── */}
-      <section className='bg-slate-50 py-24'>
+      <section className='bg-slate-50 py-20'>
         <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
           <div className='mx-auto max-w-2xl text-center'>
             <span className='inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-white px-4 py-1.5 text-sm font-semibold text-indigo-700 shadow-sm'>
-              <Sparkles size={13} className='text-indigo-500' />
+              <Sparkles
+                size={13}
+                className='text-indigo-500'
+              />
               Built for tutors
             </span>
             <h2 className='mt-5 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl'>
@@ -271,18 +332,20 @@ export default async function TeachWithUsPage() {
           </div>
 
           <div className='mt-14 grid gap-6 sm:grid-cols-3'>
-            {benefits.map(({ icon: Icon, gradient, title, description }, i) => (
+            {benefits.map(({ icon: Icon, gradient, title, description }) => (
               <div
                 key={title}
                 className='group relative overflow-hidden rounded-2xl bg-white p-8 shadow-sm ring-1 ring-slate-200 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:ring-indigo-200'>
-                <span className='pointer-events-none absolute right-5 top-4 select-none text-6xl font-black text-slate-100 transition-colors group-hover:text-indigo-50'>
-                  {String(i + 1).padStart(2, '0')}
-                </span>
-                <div
-                  className={`inline-flex h-12 w-12 items-center justify-center rounded-xl bg-linear-to-br ${gradient} shadow-sm`}>
-                  <Icon size={22} className='text-white' />
+                <div className='flex items-center gap-6'>
+                  <div
+                    className={`inline-flex h-12 w-12 items-center justify-center rounded-xl bg-linear-to-br ${gradient} shadow-sm`}>
+                    <Icon
+                      size={22}
+                      className='text-white'
+                    />
+                  </div>
+                  <h3 className='text-xl font-bold text-slate-900'>{title}</h3>
                 </div>
-                <h3 className='mt-5 text-xl font-bold text-slate-900'>{title}</h3>
                 <p className='mt-3 text-sm leading-relaxed text-slate-500'>
                   {description}
                 </p>
@@ -292,7 +355,6 @@ export default async function TeachWithUsPage() {
         </div>
       </section>
 
-      {/* ── How it works (dark) ──────────────────────────── */}
       <section className='bg-slate-900 py-24'>
         <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
           <div className='mx-auto max-w-2xl text-center'>
@@ -301,8 +363,7 @@ export default async function TeachWithUsPage() {
               Simple process
             </span>
             <h2 className='mt-5 text-4xl font-extrabold tracking-tight text-white sm:text-5xl'>
-              Up and running in{' '}
-              <span className='text-indigo-400'>3 steps</span>
+              Up and running in <span className='text-indigo-400'>3 steps</span>
             </h2>
             <p className='mt-4 text-lg text-slate-400'>
               From sign-up to first paid session in under 24 hours.
@@ -319,7 +380,10 @@ export default async function TeachWithUsPage() {
                 )}
                 <div className='flex items-center gap-4'>
                   <div className='relative flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-indigo-500/20 ring-1 ring-indigo-500/30'>
-                    <Icon size={20} className='text-indigo-400' />
+                    <Icon
+                      size={20}
+                      className='text-indigo-400'
+                    />
                     <span className='absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-indigo-500 text-xs font-bold text-white'>
                       {i + 1}
                     </span>
@@ -335,14 +399,12 @@ export default async function TeachWithUsPage() {
         </div>
       </section>
 
-      {/* ── Final CTA ────────────────────────────────────── */}
       <section className='relative overflow-hidden bg-linear-to-br from-indigo-600 via-indigo-700 to-purple-700 py-24'>
         <div className='pointer-events-none absolute -left-20 -top-20 h-72 w-72 rounded-full bg-white/5 blur-3xl' />
         <div className='pointer-events-none absolute -bottom-20 -right-20 h-72 w-72 rounded-full bg-white/5 blur-3xl' />
 
         <div className='relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
           <div className='grid items-center gap-12 lg:grid-cols-2'>
-
             <div>
               <h2 className='text-4xl font-extrabold tracking-tight text-white sm:text-5xl'>
                 Ready to start teaching?
@@ -356,7 +418,10 @@ export default async function TeachWithUsPage() {
                   <li
                     key={item}
                     className='flex items-center gap-3 text-sm text-indigo-100'>
-                    <CheckCircle size={16} className='shrink-0 text-indigo-300' />
+                    <CheckCircle
+                      size={16}
+                      className='shrink-0 text-indigo-300'
+                    />
                     {item}
                   </li>
                 ))}
@@ -391,11 +456,9 @@ export default async function TeachWithUsPage() {
                 </p>
               </div>
             </div>
-
           </div>
         </div>
       </section>
-
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import type { ApiResponse, TutorProfile, Category, TutorQueryParams, PlatformStats } from "@/types";
+import type { ApiResponse, TutorProfile, Category, TutorQueryParams, PlatformStats, FeaturedTutorStats } from "@/types";
 
 const BASE = process.env.NEXT_PUBLIC_API_URL
   ? `${process.env.NEXT_PUBLIC_API_URL}/api`
@@ -37,4 +37,11 @@ export async function fetchPlatformStats(): Promise<PlatformStats> {
   if (!res.ok) return fallback;
   const json: ApiResponse<PlatformStats> = await res.json();
   return { ...fallback, ...(json.data ?? {}) };
+}
+
+export async function fetchFeaturedTutor(): Promise<FeaturedTutorStats | null> {
+  const res = await fetch(`${BASE}/stats/featured-tutor`, { next: { revalidate: 300 } });
+  if (!res.ok) return null;
+  const json: ApiResponse<FeaturedTutorStats | null> = await res.json();
+  return json.data ?? null;
 }

@@ -109,6 +109,20 @@ export interface TutorQueryParams {
   maxRate?: number
   search?: string
 }
+export interface FeaturedTutorStats {
+  displayName: string
+  subject: string
+  monthsOnPlatform: number
+  hourlyRate: number
+  monthlyEarnings: number
+  monthlySessionCount: number
+  monthlyStudentCount: number
+  totalEarnings: number
+  totalSessionCount: number
+  rating: number
+  weeklyActivity: number[]
+}
+
 export interface PlatformStats {
   tutorCount: number
   studentCount: number
