@@ -4,8 +4,9 @@ import type { Booking, BookingStatus } from "@/types";
 import { Card, CardBody, CardFooter } from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
+import StarRating from "@/components/ui/StarRating";
 import { formatDateTime } from "@/lib/utils";
-import { CalendarDays, Clock } from "lucide-react";
+import { CalendarDays, Clock, Pencil } from "lucide-react";
 
 const statusVariant: Record<BookingStatus, "success" | "warning" | "danger"> = {
   CONFIRMED: "warning",
@@ -29,9 +30,12 @@ export default function BookingCard({
   onReview,
 }: BookingCardProps) {
   const counterpart =
-    viewAs === "student"
-      ? booking.tutor?.user
-      : booking.student;
+    viewAs === "student" ? booking.tutor?.user : booking.student;
+
+  const hasReview = !!booking.review;
+  const showReviewSection =
+    viewAs === "student" && booking.status === "COMPLETED" && !!onReview;
+  const sessionEnded = new Date() >= new Date(booking.endTime);
 
   return (
     <Card>
@@ -62,30 +66,62 @@ export default function BookingCard({
             Ends: {formatDateTime(booking.endTime)}
           </span>
         </div>
+
+        {/* Inline review display */}
+        {showReviewSection && hasReview && (
+          <div className="mt-1 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex flex-col gap-1">
+                <StarRating value={booking.review!.rating} size={14} />
+                {booking.review!.comment && (
+                  <p className="mt-1 line-clamp-2 text-xs text-slate-600">
+                    {booking.review!.comment}
+                  </p>
+                )}
+              </div>
+              <button
+                onClick={() => onReview(booking)}
+                className="shrink-0 rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-amber-100 hover:text-indigo-600"
+                title="Edit review"
+              >
+                <Pencil size={14} />
+              </button>
+            </div>
+          </div>
+        )}
       </CardBody>
 
       {/* Tutor actions */}
       {viewAs === "tutor" && booking.status === "CONFIRMED" && onStatusChange && (
-        <CardFooter className="flex gap-2">
-          <Button
-            size="sm"
-            onClick={() => onStatusChange(booking.id, "COMPLETED")}
-            loading={isUpdating}
-          >
-            Mark Complete
-          </Button>
-          <Button
-            size="sm"
-            variant="danger"
-            onClick={() => onStatusChange(booking.id, "CANCELLED")}
-            loading={isUpdating}
-          >
-            Cancel
-          </Button>
+        <CardFooter className="flex flex-col gap-2">
+          <div className="flex w-full gap-2">
+            <Button
+              size="sm"
+              onClick={() => onStatusChange(booking.id, "COMPLETED")}
+              loading={isUpdating}
+              disabled={!sessionEnded}
+              className="flex-1"
+            >
+              Mark Complete
+            </Button>
+            <Button
+              size="sm"
+              variant="danger"
+              onClick={() => onStatusChange(booking.id, "CANCELLED")}
+              loading={isUpdating}
+            >
+              Cancel
+            </Button>
+          </div>
+          {!sessionEnded && (
+            <p className="text-xs text-slate-400 text-center">
+              Available after session ends · {new Date(booking.endTime).toLocaleString()}
+            </p>
+          )}
         </CardFooter>
       )}
 
-      {/* Student actions */}
+      {/* Student: cancel confirmed session */}
       {viewAs === "student" && booking.status === "CONFIRMED" && onStatusChange && (
         <CardFooter>
           <Button
@@ -99,20 +135,18 @@ export default function BookingCard({
         </CardFooter>
       )}
 
-      {/* Student: leave or edit a review after completion */}
-      {viewAs === "student" &&
-        booking.status === "COMPLETED" &&
-        onReview && (
-          <CardFooter>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => onReview(booking)}
-            >
-              {booking.review ? "Edit Review" : "Leave a Review"}
-            </Button>
-          </CardFooter>
-        )}
+      {/* Student: leave review — only shown when no review exists yet */}
+      {showReviewSection && !hasReview && (
+        <CardFooter>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => onReview(booking)}
+          >
+            Leave a Review
+          </Button>
+        </CardFooter>
+      )}
     </Card>
   );
 }
