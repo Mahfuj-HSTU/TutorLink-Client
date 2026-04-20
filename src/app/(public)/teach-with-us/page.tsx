@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import Button from '@/components/ui/Button'
+import { fetchPlatformStats } from '@/lib/server-api'
 import {
   DollarSign,
   Clock,
@@ -10,6 +11,11 @@ import {
   GraduationCap,
   Zap
 } from 'lucide-react'
+
+function fmt(n: number): string {
+  if (n >= 1000) return `${+(n / 1000).toFixed(1)}k+`
+  return `${n}+`
+}
 
 export const metadata: Metadata = {
   title: 'Teach with Us — TutorLink',
@@ -68,7 +74,8 @@ const highlights = [
   'Full control over your schedule and rate'
 ]
 
-export default function TeachWithUsPage() {
+export default async function TeachWithUsPage() {
+  const stats = await fetchPlatformStats()
   return (
     <div>
       <section className='relative overflow-hidden bg-linear-to-br from-indigo-600 via-indigo-700 to-purple-700 py-24 sm:py-32'>
@@ -116,10 +123,15 @@ export default function TeachWithUsPage() {
         <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
           <div className='grid grid-cols-2 gap-6 text-center sm:grid-cols-4'>
             {[
-              { value: '500+', label: 'Active Tutors' },
-              { value: '10k+', label: 'Students Taught' },
-              { value: '৳60–৳120', label: 'Avg. Hourly Rate' },
-              { value: '4.9★', label: 'Tutor Satisfaction' }
+              { value: fmt(stats.tutorCount), label: 'Active Tutors' },
+              { value: fmt(stats.studentCount), label: 'Students Taught' },
+              {
+                value: stats.avgHourlyRate
+                  ? `৳${Math.floor(stats.avgHourlyRate / 10) * 10}–৳${Math.floor(stats.avgHourlyRate / 10) * 10 + 20}`
+                  : '—',
+                label: 'Avg. Hourly Rate'
+              },
+              { value: `${stats.avgRating.toFixed(1)}★`, label: 'Tutor Satisfaction' }
             ].map((s) => (
               <div key={s.label}>
                 <p className='text-3xl font-extrabold text-indigo-600'>

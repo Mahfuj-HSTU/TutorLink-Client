@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Button from '@/components/ui/Button'
 import { useAuth } from '@/lib/use-auth'
 import { useState, useEffect } from 'react'
+import type { PlatformStats } from '@/types'
 import {
   Search,
   Star,
@@ -15,6 +16,11 @@ import {
   GraduationCap,
   Sparkles
 } from 'lucide-react'
+
+function fmt(n: number): string {
+  if (n >= 1000) return `${+(n / 1000).toFixed(1)}k+`
+  return `${n}+`
+}
 
 type CTA = {
   label: string
@@ -155,7 +161,7 @@ const CONTENT: Record<string, HeroContent> = {
   }
 }
 
-export default function HeroSection() {
+export default function HeroSection({ stats }: { stats: PlatformStats }) {
   const { user } = useAuth()
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
@@ -203,10 +209,10 @@ export default function HeroSection() {
 
         <div className='mt-16 grid grid-cols-2 gap-6 sm:grid-cols-4'>
           {[
-            { value: '500+', label: 'Expert Tutors' },
-            { value: '10k+', label: 'Students' },
-            { value: '50+', label: 'Subjects' },
-            { value: '4.9★', label: 'Avg. Rating' }
+            { value: fmt(stats.tutorCount), label: 'Expert Tutors' },
+            { value: fmt(stats.studentCount), label: 'Students' },
+            { value: fmt(stats.subjectCount), label: 'Subjects' },
+            { value: `${stats.avgRating.toFixed(1)}★`, label: 'Avg. Rating' }
           ].map((stat) => (
             <div
               key={stat.label}

@@ -1,4 +1,4 @@
-import type { ApiResponse, TutorProfile, Category, TutorQueryParams } from "@/types";
+import type { ApiResponse, TutorProfile, Category, TutorQueryParams, PlatformStats } from "@/types";
 
 const BASE = process.env.NEXT_PUBLIC_API_URL
   ? `${process.env.NEXT_PUBLIC_API_URL}/api`
@@ -29,4 +29,12 @@ export async function fetchCategories(): Promise<Category[]> {
   if (!res.ok) return [];
   const json: ApiResponse<Category[]> = await res.json();
   return json.data ?? [];
+}
+
+export async function fetchPlatformStats(): Promise<PlatformStats> {
+  const fallback: PlatformStats = { tutorCount: 0, studentCount: 0, subjectCount: 0, avgRating: 0, avgHourlyRate: 0 };
+  const res = await fetch(`${BASE}/stats`, { next: { revalidate: 300 } });
+  if (!res.ok) return fallback;
+  const json: ApiResponse<PlatformStats> = await res.json();
+  return { ...fallback, ...(json.data ?? {}) };
 }

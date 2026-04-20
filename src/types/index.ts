@@ -109,6 +109,14 @@ export interface TutorQueryParams {
   maxRate?: number
   search?: string
 }
+export interface PlatformStats {
+  tutorCount: number
+  studentCount: number
+  subjectCount: number
+  avgRating: number
+  avgHourlyRate: number
+}
+
 export interface ApiResponse<T> {
   success: boolean
   message: string

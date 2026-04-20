@@ -9,13 +9,15 @@ import CategoriesSection from "@/components/features/home/CategoriesSection";
 import FeaturedTutors from "@/components/features/home/FeaturedTutors";
 import PlatformFeatures from "@/components/features/home/PlatformFeatures";
 import Testimonials from "@/components/features/home/Testimonials";
+import { fetchPlatformStats } from "@/lib/server-api";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const stats = await fetchPlatformStats();
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar />
       <main className="flex-1">
-        <HeroSection />
+        <HeroSection stats={stats} />
         <HowItWorks />
         <CategoriesSection />
         <FeaturedTutors />
