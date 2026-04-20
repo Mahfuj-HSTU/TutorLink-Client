@@ -57,7 +57,7 @@ const CONTENT: Record<string, HeroContent> = {
       },
       {
         label: 'Become a Tutor',
-        href: '/register',
+        href: '/teach-with-us',
         icon: <Users size={18} />,
         variant: 'outline'
       }

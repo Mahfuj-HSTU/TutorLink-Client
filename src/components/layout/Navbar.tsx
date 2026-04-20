@@ -62,6 +62,14 @@ export default function Navbar() {
             )
           })()}
 
+          {!user && (
+            <Link
+              href='/teach-with-us'
+              className='text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors'>
+              Teach with Us
+            </Link>
+          )}
+
           {user ? (
             <div className='relative'>
               <button
@@ -154,6 +162,14 @@ export default function Navbar() {
               </Link>
             )
           })()}
+          {!user && (
+            <Link
+              href='/teach-with-us'
+              onClick={() => setMobileOpen(false)}
+              className='block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50'>
+              Teach with Us
+            </Link>
+          )}
           {user ? (
             <>
               <Link

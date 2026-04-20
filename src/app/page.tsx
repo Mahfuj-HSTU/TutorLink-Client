@@ -7,6 +7,7 @@ import HeroSection from "@/components/features/home/HeroSection";
 import HowItWorks from "@/components/features/home/HowItWorks";
 import CategoriesSection from "@/components/features/home/CategoriesSection";
 import FeaturedTutors from "@/components/features/home/FeaturedTutors";
+import PlatformFeatures from "@/components/features/home/PlatformFeatures";
 import Testimonials from "@/components/features/home/Testimonials";
 
 export default function HomePage() {
@@ -17,6 +18,7 @@ export default function HomePage() {
         <HeroSection />
         <HowItWorks />
         <CategoriesSection />
+        <PlatformFeatures />
         <FeaturedTutors />
         <Testimonials />
       </main>
