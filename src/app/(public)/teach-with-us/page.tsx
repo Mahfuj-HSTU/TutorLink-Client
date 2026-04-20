@@ -103,10 +103,10 @@ export default async function TeachWithUsPage() {
 
   return (
     <div className='overflow-hidden'>
-      <section className='relative bg-linear-to-br from-slate-900 via-indigo-950 to-slate-900 py-24'>
+      <section className='relative bg-linear-to-br from-slate-900 via-indigo-950 to-slate-900 py-24 sm:py-32'>
         <div className='pointer-events-none absolute inset-0'>
-          <div className='absolute -left-40 -top-40 h-[500px] w-[500px] rounded-full bg-indigo-600/20 blur-3xl' />
-          <div className='absolute -bottom-40 -right-20 h-[400px] w-[400px] rounded-full bg-purple-600/20 blur-3xl' />
+          <div className='absolute -left-40 -top-40 h-125 w-125 rounded-full bg-indigo-600/20 blur-3xl' />
+          <div className='absolute -bottom-40 -right-20 h-100 w-100 rounded-full bg-purple-600/20 blur-3xl' />
         </div>
 
         <div className='relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>

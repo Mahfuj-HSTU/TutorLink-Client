@@ -13,7 +13,6 @@ type Role = 'GUEST' | 'STUDENT' | 'TUTOR' | 'ADMIN'
 interface NavLink {
   label: string
   href: string
-  // null = public (anyone can visit). Otherwise only these roles may visit.
   allowedRoles: Role[] | null
 }
 
@@ -49,19 +48,16 @@ export default function Footer() {
   const role: Role = mounted && user ? (user.role as Role) : 'GUEST'
 
   const handleClick = (item: NavLink) => {
-    // Public link — always navigate
     if (item.allowedRoles === null) {
       router.push(item.href)
       return
     }
 
-    // Not logged in — redirect to login
     if (!mounted || !user) {
       router.push(`/login?callbackUrl=${encodeURIComponent(item.href)}`)
       return
     }
 
-    // Role matches — navigate
     if (item.allowedRoles.includes(role)) {
       router.push(item.href)
       return
@@ -86,9 +82,8 @@ export default function Footer() {
 
   return (
     <footer className='border-t border-slate-200 bg-slate-50'>
-      <div className='mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8'>
+      <div className='mx-auto max-w-7xl px-4 pt-12 pb-6 sm:px-6 lg:px-8'>
         <div className='grid grid-cols-1 gap-8 md:grid-cols-4'>
-          {/* Brand */}
           <div className='col-span-1 md:col-span-2'>
             <Link href='/'>
               <Image
