@@ -71,7 +71,6 @@ const highlights = [
 export default function TeachWithUsPage() {
   return (
     <div>
-      {/* Hero */}
       <section className='relative overflow-hidden bg-linear-to-br from-indigo-600 via-indigo-700 to-purple-700 py-24 sm:py-32'>
         <div className='absolute -right-40 -top-40 h-96 w-96 rounded-full bg-white/5 blur-3xl' />
         <div className='absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-white/5 blur-3xl' />
@@ -119,7 +118,7 @@ export default function TeachWithUsPage() {
             {[
               { value: '500+', label: 'Active Tutors' },
               { value: '10k+', label: 'Students Taught' },
-              { value: '$60–$120', label: 'Avg. Hourly Rate' },
+              { value: '৳60–৳120', label: 'Avg. Hourly Rate' },
               { value: '4.9★', label: 'Tutor Satisfaction' }
             ].map((s) => (
               <div key={s.label}>
@@ -138,8 +137,7 @@ export default function TeachWithUsPage() {
         <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
           <div className='mx-auto max-w-2xl text-center'>
             <h2 className='text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl'>
-              Why teach on{' '}
-              <span className='text-indigo-600'>TutorLink?</span>
+              Why teach on <span className='text-indigo-600'>TutorLink?</span>
             </h2>
             <p className='mt-4 text-lg text-slate-600'>
               We built the platform around tutors — so you can focus entirely on
