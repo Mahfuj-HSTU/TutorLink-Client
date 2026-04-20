@@ -18,7 +18,7 @@ export async function fetchTutors(params?: TutorQueryParams): Promise<TutorProfi
 }
 
 export async function fetchTutorById(id: string): Promise<TutorProfile | null> {
-  const res = await fetch(`${BASE}/tutors/${id}`, { next: { revalidate: 60 } });
+  const res = await fetch(`${BASE}/tutors/${id}`, { cache: 'no-store' });
   if (!res.ok) return null;
   const json: ApiResponse<TutorProfile> = await res.json();
   return json.data ?? null;

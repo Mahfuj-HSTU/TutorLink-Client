@@ -206,6 +206,10 @@ export default function TutorBookingPanel({ tutor }: Props) {
           )}
         </div>
       )}
+      {user?.role === 'TUTOR' && (
+        <p className='text-sm text-slate-400'>Tutors cannot book sessions.</p>
+      )}
+
       {!user && (
         <Button onClick={() => (window.location.href = '/login')}>
           Login to Book

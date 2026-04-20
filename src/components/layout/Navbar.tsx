@@ -62,6 +62,14 @@ export default function Navbar() {
             )
           })()}
 
+          {user?.role === 'TUTOR' && (
+            <Link
+              href='/tutors'
+              className='text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors'>
+              Find Tutors
+            </Link>
+          )}
+
           {user?.role !== 'TUTOR' && (
             <Link
               href='/teach-with-us'
@@ -162,6 +170,14 @@ export default function Navbar() {
               </Link>
             )
           })()}
+          {user?.role === 'TUTOR' && (
+            <Link
+              href='/tutors'
+              onClick={() => setMobileOpen(false)}
+              className='block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50'>
+              Find Tutors
+            </Link>
+          )}
           {user?.role !== 'TUTOR' && (
             <Link
               href='/teach-with-us'
