@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 'use client'
 
 import Link from 'next/link'
@@ -16,26 +17,27 @@ interface NavLink {
   allowedRoles: Role[] | null
 }
 
-const ROLE_LABEL: Record<Role, string> = {
-  GUEST: 'a guest',
-  STUDENT: 'a Student',
-  TUTOR: 'a Tutor',
-  ADMIN: 'an Admin',
-}
-
 const LEARNER_LINKS: NavLink[] = [
-  { label: 'Find a Tutor',       href: '/tutors',     allowedRoles: null },
-  { label: 'Browse Subjects',    href: '/subjects',   allowedRoles: null },
-  { label: 'How It Works',       href: '/#how-it-works', allowedRoles: null },
-  { label: 'Student Dashboard',  href: '/dashboard',  allowedRoles: ['STUDENT'] },
-  { label: 'My Bookings',        href: '/bookings',   allowedRoles: ['STUDENT'] },
+  { label: 'Find a Tutor', href: '/tutors', allowedRoles: null },
+  { label: 'Browse Subjects', href: '/subjects', allowedRoles: null },
+  { label: 'How It Works', href: '/#how-it-works', allowedRoles: null },
+  { label: 'Student Dashboard', href: '/dashboard', allowedRoles: ['STUDENT'] },
+  { label: 'My Bookings', href: '/bookings', allowedRoles: ['STUDENT'] }
 ]
 
 const TUTOR_LINKS: NavLink[] = [
-  { label: 'Become a Tutor',  href: '/register',          allowedRoles: ['GUEST', 'STUDENT'] },
-  { label: 'Tutor Dashboard', href: '/tutor/dashboard',   allowedRoles: ['TUTOR'] },
-  { label: 'Manage Profile',  href: '/tutor/profile',     allowedRoles: ['TUTOR'] },
-  { label: 'My Bookings',     href: '/tutor/bookings',    allowedRoles: ['TUTOR'] },
+  {
+    label: 'Become a Tutor',
+    href: '/register',
+    allowedRoles: ['GUEST', 'STUDENT']
+  },
+  {
+    label: 'Tutor Dashboard',
+    href: '/tutor/dashboard',
+    allowedRoles: ['TUTOR']
+  },
+  { label: 'Manage Profile', href: '/tutor/profile', allowedRoles: ['TUTOR'] },
+  { label: 'My Bookings', href: '/tutor/bookings', allowedRoles: ['TUTOR'] }
 ]
 
 export default function Footer() {
@@ -65,7 +67,6 @@ export default function Footer() {
       return
     }
 
-    // Role mismatch — redirect to /unauthorized with context
     const requiredRole = item.allowedRoles.find((r) => r !== 'GUEST') ?? ''
     router.push(
       `/unauthorized?page=${encodeURIComponent(item.label)}&requiredRole=${requiredRole}`
@@ -77,8 +78,7 @@ export default function Footer() {
       <li key={item.label}>
         <button
           onClick={() => handleClick(item)}
-          className='text-left text-sm text-slate-500 transition-colors hover:text-indigo-600'
-        >
+          className='text-left text-sm text-slate-500 transition-colors hover:text-indigo-600'>
           {item.label}
         </button>
       </li>
@@ -124,7 +124,9 @@ export default function Footer() {
 
           {/* For Learners */}
           <div>
-            <h3 className='text-sm font-semibold text-slate-900'>For Learners</h3>
+            <h3 className='text-sm font-semibold text-slate-900'>
+              For Learners
+            </h3>
             <ul className='mt-3 space-y-2'>{renderLinks(LEARNER_LINKS)}</ul>
           </div>
 
