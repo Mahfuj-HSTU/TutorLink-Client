@@ -4,7 +4,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { Mail, ExternalLink, Globe } from 'lucide-react'
+import { Mail, Share2, Globe, ExternalLink } from 'lucide-react'
 import { useAuth } from '@/lib/use-auth'
 import { useState, useEffect } from 'react'
 
@@ -25,6 +25,7 @@ const LEARNER_LINKS: NavLink[] = [
 ]
 
 const TUTOR_LINKS: NavLink[] = [
+  { label: 'Teach with Us', href: '/teach-with-us', allowedRoles: null },
   {
     label: 'Become a Tutor',
     href: '/register',
@@ -37,6 +38,13 @@ const TUTOR_LINKS: NavLink[] = [
   },
   { label: 'Manage Profile', href: '/tutor/profile', allowedRoles: ['TUTOR'] },
   { label: 'My Bookings', href: '/tutor/bookings', allowedRoles: ['TUTOR'] }
+]
+
+const SOCIAL = [
+  { icon: Share2, href: '#', label: 'Social' },
+  { icon: Globe, href: '#', label: 'Website' },
+  { icon: ExternalLink, href: '#', label: 'Community' },
+  { icon: Mail, href: 'mailto:hello@tutorlink.com', label: 'Email' }
 ]
 
 export default function Footer() {
@@ -52,17 +60,14 @@ export default function Footer() {
       router.push(item.href)
       return
     }
-
     if (!mounted || !user) {
       router.push(`/login?callbackUrl=${encodeURIComponent(item.href)}`)
       return
     }
-
     if (item.allowedRoles.includes(role)) {
       router.push(item.href)
       return
     }
-
     const requiredRole = item.allowedRoles.find((r) => r !== 'GUEST') ?? ''
     router.push(
       `/unauthorized?page=${encodeURIComponent(item.label)}&requiredRole=${requiredRole}`
@@ -74,66 +79,85 @@ export default function Footer() {
       <li key={item.label}>
         <button
           onClick={() => handleClick(item)}
-          className='text-left text-sm text-slate-500 transition-colors hover:text-indigo-600'>
+          className='text-left text-sm text-slate-300 transition-colors hover:text-white'>
           {item.label}
         </button>
       </li>
     ))
 
   return (
-    <footer className='border-t border-slate-200 bg-slate-50'>
-      <div className='mx-auto max-w-7xl px-4 pt-12 pb-6 sm:px-6 lg:px-8'>
-        <div className='grid grid-cols-1 gap-8 md:grid-cols-4'>
-          <div className='col-span-1 md:col-span-2'>
+    <footer className='bg-slate-900'>
+      <div className='mx-auto max-w-7xl px-4 pt-14 pb-8 sm:px-6 lg:px-8'>
+        <div className='grid grid-cols-2 gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8'>
+          {/* Brand — full width on mobile, 2-col span on lg */}
+          <div className='col-span-2 lg:col-span-2'>
             <Link href='/'>
               <Image
                 src='/logo.png'
                 alt='TutorLink'
-                width={120}
+                width={130}
                 height={40}
-                className='h-9 w-auto'
+                className='h-11 w-auto'
               />
             </Link>
-            <p className='mt-3 max-w-xs text-sm text-slate-500'>
+            <p className='mt-4 max-w-sm text-sm leading-relaxed text-slate-300'>
               Connecting learners with expert tutors for a personalised,
               flexible learning experience — online or in person.
             </p>
-            <div className='mt-4 flex items-center gap-3'>
-              <a
-                href='#'
-                className='rounded-lg p-2 text-slate-400 hover:bg-slate-200 hover:text-slate-600 transition-colors'>
-                <ExternalLink size={16} />
-              </a>
-              <a
-                href='#'
-                className='rounded-lg p-2 text-slate-400 hover:bg-slate-200 hover:text-slate-600 transition-colors'>
-                <Globe size={16} />
-              </a>
-              <a
-                href='mailto:hello@tutorlink.com'
-                className='rounded-lg p-2 text-slate-400 hover:bg-slate-200 hover:text-slate-600 transition-colors'>
-                <Mail size={16} />
-              </a>
+            <div className='mt-5 flex items-center gap-2'>
+              {SOCIAL.map(({ icon: Icon, href, label }) => (
+                <a
+                  key={label}
+                  href={href}
+                  aria-label={label}
+                  className='flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 text-slate-400 transition-colors hover:border-indigo-500/50 hover:bg-indigo-500/10 hover:text-indigo-400'>
+                  <Icon size={16} />
+                </a>
+              ))}
             </div>
           </div>
 
           {/* For Learners */}
           <div>
-            <h3 className='text-sm font-semibold text-slate-900'>
+            <h3 className='text-xs font-semibold uppercase tracking-wider text-slate-200'>
               For Learners
             </h3>
-            <ul className='mt-3 space-y-2'>{renderLinks(LEARNER_LINKS)}</ul>
+            <ul className='mt-4 space-y-2.5'>{renderLinks(LEARNER_LINKS)}</ul>
           </div>
 
           {/* For Tutors */}
           <div>
-            <h3 className='text-sm font-semibold text-slate-900'>For Tutors</h3>
-            <ul className='mt-3 space-y-2'>{renderLinks(TUTOR_LINKS)}</ul>
+            <h3 className='text-xs font-semibold uppercase tracking-wider text-slate-200'>
+              For Tutors
+            </h3>
+            <ul className='mt-4 space-y-2.5'>{renderLinks(TUTOR_LINKS)}</ul>
           </div>
         </div>
+      </div>
 
-        <div className='mt-10 border-t border-slate-200 pt-6 text-center text-xs text-slate-400'>
-          &copy; {new Date().getFullYear()} TutorLink. All rights reserved.
+      {/* Bottom bar */}
+      <div className='border-t border-white/10'>
+        <div className='mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 py-5 sm:flex-row sm:px-6 lg:px-8'>
+          <p className='text-xs text-slate-500'>
+            &copy; {new Date().getFullYear()} TutorLink. All rights reserved.
+          </p>
+          <div className='flex items-center gap-5 text-xs text-slate-500'>
+            <Link
+              href='/privacy'
+              className='transition-colors hover:text-slate-300'>
+              Privacy Policy
+            </Link>
+            <Link
+              href='/terms'
+              className='transition-colors hover:text-slate-300'>
+              Terms of Service
+            </Link>
+            <Link
+              href='/contact'
+              className='transition-colors hover:text-slate-300'>
+              Contact
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

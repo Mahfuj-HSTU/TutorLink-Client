@@ -476,7 +476,7 @@ export default async function TeachWithUsPage() {
                 <p className='text-sm font-medium text-indigo-200'>
                   Avg. tutor earns
                 </p>
-                <p className='mt-1 text-4xl font-extrabold text-white sm:text-5xl'>
+                <p className='mt-1 text-3xl font-extrabold text-white sm:text-5xl'>
                   {rateRange}
                 </p>
                 <p className='mt-1 text-sm text-indigo-300'>per hour</p>
