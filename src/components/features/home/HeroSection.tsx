@@ -14,7 +14,7 @@ import {
   LayoutDashboard,
   Shield,
   GraduationCap,
-  Sparkles
+  Zap
 } from 'lucide-react'
 
 function fmt(n: number): string {
@@ -72,7 +72,7 @@ const CONTENT: Record<string, HeroContent> = {
   STUDENT: {
     badge: {
       icon: (
-        <Sparkles
+        <Zap
           size={14}
           className='fill-indigo-400 text-indigo-400'
         />
@@ -169,36 +169,36 @@ export default function HeroSection({ stats }: { stats: PlatformStats }) {
     mounted && user ? (CONTENT[user.role] ?? CONTENT.GUEST) : CONTENT.GUEST
 
   return (
-    <section className='relative overflow-hidden bg-linear-to-br from-indigo-100 via-white to-purple-100 py-20 sm:py-28'>
+    <section className='relative overflow-hidden bg-linear-to-br from-indigo-100 via-white to-purple-100 py-10 sm:py-20'>
       <div className='absolute -right-40 -top-40 h-96 w-96 rounded-full bg-indigo-100 opacity-60 blur-3xl' />
       <div className='absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-purple-100 opacity-60 blur-3xl' />
 
       <div className='relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
         <div className='mx-auto max-w-3xl text-center'>
-          <span className='inline-flex items-center gap-2 rounded-full bg-indigo-100 px-4 py-1.5 text-sm font-medium text-indigo-700'>
+          <span className='inline-flex items-center gap-1.5 rounded-full bg-indigo-100 px-3 py-1 text-xs font-medium text-indigo-700 sm:gap-2 sm:px-4 sm:py-1.5 sm:text-sm'>
             {content.badge.icon}
             {content.badge.text}
           </span>
 
-          <h1 className='mt-6 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl'>
+          <h1 className='mt-4 text-[1.75rem] font-extrabold leading-tight tracking-tight text-slate-900 sm:mt-6 sm:text-5xl lg:text-6xl'>
             {content.headlinePlain}{' '}
             <span className='text-indigo-600'>{content.headlineHighlight}</span>{' '}
             {content.headlineSuffix}
           </h1>
 
-          <p className='mt-6 text-lg leading-relaxed text-slate-600'>
+          <p className='mt-4 text-sm leading-relaxed text-slate-600 sm:mt-6 sm:text-lg'>
             {content.subtitle}
           </p>
 
-          <div className='mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center'>
+          <div className='mt-7 flex gap-3 sm:mt-10 flex-row justify-center sm:gap-4'>
             {content.ctas.map((cta) => (
               <Link
                 key={cta.href}
-                href={cta.href}>
+                href={cta.href}
+                className='w-full sm:w-auto'>
                 <Button
                   variant={cta.variant ?? 'primary'}
-                  size='lg'
-                  className='gap-2'>
+                  className=''>
                   {cta.icon}
                   {cta.label}
                 </Button>
@@ -207,7 +207,7 @@ export default function HeroSection({ stats }: { stats: PlatformStats }) {
           </div>
         </div>
 
-        <div className='mt-16 grid grid-cols-2 gap-6 sm:grid-cols-4'>
+        <div className='mt-10 grid grid-cols-2 gap-3 sm:mt-16 sm:grid-cols-4 sm:gap-6'>
           {[
             { value: fmt(stats.tutorCount), label: 'Expert Tutors' },
             { value: fmt(stats.studentCount), label: 'Students' },
@@ -216,11 +216,13 @@ export default function HeroSection({ stats }: { stats: PlatformStats }) {
           ].map((stat) => (
             <div
               key={stat.label}
-              className='rounded-2xl border border-slate-200 bg-white/80 p-5 text-center shadow-sm backdrop-blur'>
-              <p className='text-3xl font-extrabold text-indigo-600'>
+              className='rounded-2xl border border-slate-200 bg-white/80 p-4 text-center shadow-sm backdrop-blur sm:p-5'>
+              <p className='text-2xl font-extrabold text-indigo-600 sm:text-3xl'>
                 {stat.value}
               </p>
-              <p className='mt-1 text-sm text-slate-500'>{stat.label}</p>
+              <p className='mt-0.5 text-xs text-slate-500 sm:mt-1 sm:text-sm'>
+                {stat.label}
+              </p>
             </div>
           ))}
         </div>

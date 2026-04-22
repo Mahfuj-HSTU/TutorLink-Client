@@ -25,7 +25,7 @@ export default function TutorCard({ tutor }: TutorCardProps) {
   return (
     <Link
       href={`/tutors/${tutor.id}`}
-      className='group flex flex-col rounded-2xl border border-slate-200 bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-md'>
+      className='group flex h-full flex-col rounded-2xl border border-slate-200 bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-md'>
       <div className='relative flex items-center gap-4 rounded-t-2xl bg-linear-to-r from-indigo-50 to-purple-50 p-5'>
         {tutor.user.image ? (
           <img

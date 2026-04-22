@@ -5,18 +5,19 @@ import Button from '@/components/ui/Button'
 
 export default async function FeaturedTutors() {
   const tutors = await fetchTutors()
-  const score = (t: (typeof tutors)[0]) => t.rating * Math.sqrt(t.totalReviews + 1)
+  const score = (t: (typeof tutors)[0]) =>
+    t.rating * Math.sqrt(t.totalReviews + 1)
   const featured = [...tutors].sort((a, b) => score(b) - score(a)).slice(0, 4)
 
   return (
-    <section className='py-20'>
+    <section className='py-10 sm:py-20'>
       <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
         <div className='flex items-end justify-between'>
           <div>
-            <h2 className='text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl'>
+            <h2 className='text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl lg:text-4xl'>
               Top-Rated Tutors
             </h2>
-            <p className='mt-3 text-lg text-slate-500'>
+            <p className='mt-2 text-sm text-slate-500 sm:mt-3 sm:text-lg'>
               Hand-picked experts with consistently great reviews.
             </p>
           </div>
@@ -36,17 +37,31 @@ export default async function FeaturedTutors() {
             No tutors available yet.
           </p>
         ) : (
-          <div className='mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4'>
-            {featured.map((tutor) => (
-              <TutorCard
-                key={tutor.id}
-                tutor={tutor}
-              />
-            ))}
-          </div>
+          <>
+            {/* Mobile: horizontal scroll row */}
+            <div className='-mx-4 mt-6 flex gap-4 overflow-x-auto px-4 pb-3 sm:hidden'>
+              {featured.map((tutor) => (
+                <div
+                  key={tutor.id}
+                  className='w-64 shrink-0 self-stretch'>
+                  <TutorCard tutor={tutor} />
+                </div>
+              ))}
+            </div>
+
+            {/* Tablet + Desktop: grid */}
+            <div className='mt-10 hidden grid-cols-2 gap-6 sm:grid lg:grid-cols-4'>
+              {featured.map((tutor) => (
+                <TutorCard
+                  key={tutor.id}
+                  tutor={tutor}
+                />
+              ))}
+            </div>
+          </>
         )}
 
-        <div className='mt-8 text-center sm:hidden'>
+        <div className='mt-6 text-center sm:hidden'>
           <Link href='/tutors'>
             <Button variant='outline'>See all tutors</Button>
           </Link>
