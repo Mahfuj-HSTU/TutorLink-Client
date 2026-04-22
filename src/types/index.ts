@@ -52,6 +52,7 @@ export interface Booking {
   startTime: string
   endTime: string
   price: number
+  questions?: string
   status: BookingStatus
   createdAt: string
   updatedAt: string
@@ -88,6 +89,7 @@ export interface CreateBookingPayload {
   startTime: string
   endTime: string
   price: number
+  questions: string
 }
 
 export interface CreateReviewPayload {

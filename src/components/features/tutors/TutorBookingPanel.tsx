@@ -64,6 +64,7 @@ export default function TutorBookingPanel({ tutor }: Props) {
   const [startSlot, setStartSlot] = useState('')
   const [endDate, setEndDate] = useState('')
   const [endSlot, setEndSlot] = useState('')
+  const [questions, setQuestions] = useState('')
   const [createBooking, { isLoading: isBooking }] = useCreateBookingMutation()
 
   const { data: myBookingsResp } = useGetMyBookingsQuery(undefined, {
@@ -155,11 +156,16 @@ export default function TutorBookingPanel({ tutor }: Props) {
     setStartSlot('')
     setEndDate('')
     setEndSlot('')
+    setQuestions('')
   }
 
   const handleBook = async () => {
     if (!startDate || !startSlot || !endDate || !endSlot) {
       toast.error('Please select both start and end date/time.')
+      return
+    }
+    if (!questions.trim()) {
+      toast.error('Please describe what you want to learn in this session.')
       return
     }
     const start = new Date(`${startDate}T${startSlot}:00`)
@@ -173,7 +179,8 @@ export default function TutorBookingPanel({ tutor }: Props) {
         tutorId: tutor.id,
         startTime: start.toISOString(),
         endTime: end.toISOString(),
-        price: tutor.hourlyRate
+        price: tutor.hourlyRate,
+        questions: questions.trim()
       }).unwrap()
       toast.success('Booking confirmed!')
       setBookingOpen(false)
@@ -297,6 +304,19 @@ export default function TutorBookingPanel({ tutor }: Props) {
             <p className='text-xs text-slate-400'>
               Minimum 1 hour after start time
             </p>
+          </div>
+
+          <div className='flex flex-col gap-1'>
+            <label className='text-sm font-medium text-slate-700'>
+              What do you want to learn? <span className='text-red-500'>*</span>
+            </label>
+            <textarea
+              value={questions}
+              onChange={(e) => setQuestions(e.target.value)}
+              rows={3}
+              placeholder='Describe your questions, topics, or goals for this session…'
+              className='w-full resize-none rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
+            />
           </div>
 
           <p className='text-sm text-slate-500'>
