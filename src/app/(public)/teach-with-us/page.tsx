@@ -12,8 +12,8 @@ import {
   TrendingUp,
   Star,
   CalendarCheck,
-  Sparkles,
-  BadgeCheck
+  BadgeCheck,
+  Zap
 } from 'lucide-react'
 
 export const metadata: Metadata = {
@@ -103,52 +103,61 @@ export default async function TeachWithUsPage() {
 
   return (
     <div className='overflow-hidden'>
-      <section className='relative bg-linear-to-br from-slate-900 via-indigo-950 to-slate-900 py-24 sm:py-32'>
+      {/* ── Hero ── */}
+      <section className='relative bg-linear-to-br from-slate-900 via-indigo-950 to-slate-900 py-10 sm:py-20 lg:py-28'>
         <div className='pointer-events-none absolute inset-0'>
           <div className='absolute -left-40 -top-40 h-125 w-125 rounded-full bg-indigo-600/20 blur-3xl' />
           <div className='absolute -bottom-40 -right-20 h-100 w-100 rounded-full bg-purple-600/20 blur-3xl' />
         </div>
 
         <div className='relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
-          <div className='grid items-center gap-16 lg:grid-cols-2'>
+          <div className='grid items-center gap-10 lg:gap-16 lg:grid-cols-2'>
             <div>
-              <span className='inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-sm font-medium text-indigo-200 backdrop-blur'>
-                <Sparkles
-                  size={13}
-                  className='text-indigo-300'
+              <span className='inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-medium text-indigo-200 backdrop-blur sm:gap-2 sm:px-4 sm:py-1.5 sm:text-sm'>
+                <TrendingUp
+                  size={12}
+                  className='text-indigo-300 sm:size-3'
                 />
                 Join {fmt(stats.tutorCount)} tutors already earning
               </span>
-              <h1 className='mt-6 text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl'>
+
+              <h1 className='mt-4 text-[1.75rem] font-extrabold leading-tight tracking-tight text-white sm:mt-6 sm:text-5xl lg:text-6xl'>
                 Turn Your Knowledge Into{' '}
                 <span className='bg-linear-to-r from-indigo-300 to-purple-300 bg-clip-text text-transparent'>
                   Meaningful Income
                 </span>
               </h1>
-              <p className='mt-6 text-lg leading-relaxed text-slate-400'>
+
+              <p className='mt-4 text-sm leading-relaxed text-slate-400 sm:mt-6 sm:text-lg'>
                 Share your expertise, set your own schedule, and earn on your
                 terms. Thousands of students on TutorLink are looking for
                 someone exactly like you.
               </p>
-              <div className='mt-10 flex flex-wrap gap-4'>
-                <Link href='/register'>
+
+              <div className='mt-7 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:gap-4'>
+                <Link
+                  href='/register'
+                  className='w-full sm:w-auto'>
                   <Button
                     size='lg'
-                    className='gap-2 bg-indigo-500 text-white hover:bg-indigo-400'>
+                    className='w-full gap-2 bg-indigo-500 text-white hover:bg-indigo-400 sm:w-auto'>
                     Apply Now — It&apos;s Free
                     <ArrowRight size={18} />
                   </Button>
                 </Link>
-                <Link href='/tutors'>
+                <Link
+                  href='/tutors'
+                  className='w-full sm:w-auto'>
                   <Button
                     size='lg'
                     variant='outline'
-                    className='gap-2 border-white/20 text-white hover:bg-white/10'>
+                    className='w-full gap-2 border-white/20 text-white hover:bg-white/10 sm:w-auto'>
                     See Tutor Profiles
                   </Button>
                 </Link>
               </div>
-              <div className='mt-10 flex flex-wrap items-center gap-6'>
+
+              <div className='mt-6 flex flex-wrap items-center gap-4 sm:mt-10 sm:gap-6'>
                 {[
                   { icon: BadgeCheck, text: 'Free to join' },
                   { icon: Star, text: 'Top-rated community' },
@@ -156,17 +165,40 @@ export default async function TeachWithUsPage() {
                 ].map(({ icon: Icon, text }) => (
                   <span
                     key={text}
-                    className='flex items-center gap-2 text-sm text-slate-400'>
+                    className='flex items-center gap-1.5 text-xs text-slate-400 sm:gap-2 sm:text-sm'>
                     <Icon
-                      size={15}
-                      className='text-indigo-400'
+                      size={13}
+                      className='text-indigo-400 sm:size-3.5'
                     />
                     {text}
                   </span>
                 ))}
               </div>
+
+              {/* Mobile-only compact earnings preview */}
+              {featured && (
+                <div className='mt-6 flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3 lg:hidden'>
+                  <div>
+                    <p className='text-xs text-slate-400'>
+                      Top earner this month
+                    </p>
+                    <p className='mt-0.5 text-xl font-extrabold text-white'>
+                      ৳{featured.monthlyEarnings.toLocaleString()}
+                    </p>
+                  </div>
+                  <div className='text-right'>
+                    <p className='text-xs text-slate-400'>
+                      {featured.displayName}
+                    </p>
+                    <p className='text-sm font-semibold text-emerald-400'>
+                      ৳{featured.hourlyRate}/hr
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
 
+            {/* Desktop earnings card */}
             <div className='relative hidden lg:block'>
               <div className='absolute -inset-4 rounded-3xl bg-indigo-500/10 blur-2xl' />
               <div className='relative rounded-2xl border border-white/10 bg-white/5 p-1 backdrop-blur'>
@@ -224,7 +256,7 @@ export default async function TeachWithUsPage() {
                     <p className='mb-3 text-xs font-medium text-slate-400'>
                       Last 7 days
                     </p>
-                    <div className='flex items-end gap-1.5 h-12'>
+                    <div className='flex h-12 items-end gap-1.5'>
                       {barHeights.map((h, i) => (
                         <div
                           key={i}
@@ -271,6 +303,7 @@ export default async function TeachWithUsPage() {
         </div>
       </section>
 
+      {/* ── Stats bar ── */}
       <section className='border-y border-slate-200 bg-white'>
         <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
           <div className='grid grid-cols-2 divide-x divide-y divide-slate-200 sm:grid-cols-4 sm:divide-y-0'>
@@ -294,59 +327,62 @@ export default async function TeachWithUsPage() {
             ].map(({ value, label, icon: Icon }) => (
               <div
                 key={label}
-                className='flex flex-col items-center gap-1 py-8 text-center'>
+                className='flex flex-col items-center gap-1 py-5 text-center sm:py-8'>
                 <Icon
-                  size={18}
-                  className='text-indigo-400'
+                  size={16}
+                  className='text-indigo-400 sm:size-4.5'
                 />
-                <p className='mt-1 text-3xl font-extrabold text-slate-900'>
+                <p className='mt-0.5 text-2xl font-extrabold text-slate-900 sm:mt-1 sm:text-3xl'>
                   {value}
                 </p>
-                <p className='text-sm text-slate-500'>{label}</p>
+                <p className='text-xs text-slate-500 sm:text-sm'>{label}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className='bg-slate-50 py-20'>
+      {/* ── Benefits ── */}
+      <section className='bg-slate-50 py-12 sm:py-20'>
         <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
           <div className='mx-auto max-w-2xl text-center'>
-            <span className='inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-white px-4 py-1.5 text-sm font-semibold text-indigo-700 shadow-sm'>
-              <Sparkles
-                size={13}
-                className='text-indigo-500'
+            <span className='inline-flex items-center gap-1.5 rounded-full border border-indigo-200 bg-white px-3 py-1 text-xs font-semibold text-indigo-700 shadow-sm sm:gap-2 sm:px-4 sm:py-1.5 sm:text-sm'>
+              <BadgeCheck
+                size={12}
+                className='text-indigo-500 sm:size-3'
               />
               Built for tutors
             </span>
-            <h2 className='mt-5 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl'>
+            <h2 className='mt-4 text-2xl font-extrabold tracking-tight text-slate-900 sm:mt-5 sm:text-4xl lg:text-5xl'>
               Why teach on{' '}
               <span className='bg-linear-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent'>
                 TutorLink?
               </span>
             </h2>
-            <p className='mt-4 text-lg text-slate-500'>
+            <p className='mt-3 text-sm text-slate-500 sm:mt-4 sm:text-lg'>
               We built the platform around tutors — so you can focus entirely on
               what you do best.
             </p>
           </div>
 
-          <div className='mt-14 grid gap-6 sm:grid-cols-3'>
+          <div className='mt-10 grid gap-4 sm:mt-14 sm:grid-cols-3 sm:gap-6'>
             {benefits.map(({ icon: Icon, gradient, title, description }) => (
               <div
                 key={title}
-                className='group relative overflow-hidden rounded-2xl bg-white p-8 shadow-sm ring-1 ring-slate-200 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:ring-indigo-200'>
-                <div className='flex items-center gap-6'>
+                className='group relative overflow-hidden rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:ring-indigo-200 sm:p-8'>
+                <div className='flex items-center gap-3 sm:gap-6'>
                   <div
-                    className={`inline-flex h-12 w-12 items-center justify-center rounded-xl bg-linear-to-br ${gradient} shadow-sm`}>
+                    className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-linear-to-br ${gradient} shadow-sm sm:h-12 sm:w-12`}>
                     <Icon
-                      size={22}
-                      className='text-white'
+                      size={18}
+                      className='text-white sm:size-5.5'
                     />
                   </div>
-                  <h3 className='text-xl font-bold text-slate-900'>{title}</h3>
+                  <h3 className='text-sm font-bold text-slate-900 sm:text-xl'>
+                    {title}
+                  </h3>
                 </div>
-                <p className='mt-3 text-sm leading-relaxed text-slate-500'>
+                <p className='mt-3 text-xs leading-relaxed text-slate-500 sm:text-sm'>
                   {description}
                 </p>
               </div>
@@ -355,22 +391,26 @@ export default async function TeachWithUsPage() {
         </div>
       </section>
 
-      <section className='bg-slate-900 py-24'>
+      {/* ── Steps ── */}
+      <section className='bg-slate-900 py-12 sm:py-24'>
         <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
           <div className='mx-auto max-w-2xl text-center'>
-            <span className='inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-sm font-medium text-indigo-300'>
-              <Sparkles size={13} />
+            <span className='inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-medium text-indigo-300 sm:gap-2 sm:px-4 sm:py-1.5 sm:text-sm'>
+              <Zap
+                size={12}
+                className='sm:size-3'
+              />
               Simple process
             </span>
-            <h2 className='mt-5 text-4xl font-extrabold tracking-tight text-white sm:text-5xl'>
+            <h2 className='mt-4 text-2xl font-extrabold tracking-tight text-white sm:mt-5 sm:text-4xl lg:text-5xl'>
               Up and running in <span className='text-indigo-400'>3 steps</span>
             </h2>
-            <p className='mt-4 text-lg text-slate-400'>
+            <p className='mt-3 text-sm text-slate-400 sm:mt-4 sm:text-lg'>
               From sign-up to first paid session in under 24 hours.
             </p>
           </div>
 
-          <div className='mt-16 grid gap-8 sm:grid-cols-3'>
+          <div className='mt-12 grid gap-6 sm:mt-16 sm:grid-cols-3 sm:gap-8'>
             {steps.map(({ number, icon: Icon, title, description }, i) => (
               <div
                 key={number}
@@ -378,19 +418,21 @@ export default async function TeachWithUsPage() {
                 {i < steps.length - 1 && (
                   <div className='absolute left-full top-6 hidden h-px w-full -translate-x-1/2 bg-indigo-900 sm:block' />
                 )}
-                <div className='flex items-center gap-4'>
-                  <div className='relative flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-indigo-500/20 ring-1 ring-indigo-500/30'>
+                <div className='flex items-center gap-3 sm:gap-4'>
+                  <div className='relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-indigo-500/20 ring-1 ring-indigo-500/30 sm:h-12 sm:w-12'>
                     <Icon
-                      size={20}
-                      className='text-indigo-400'
+                      size={18}
+                      className='text-indigo-400 sm:size-5'
                     />
-                    <span className='absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-indigo-500 text-xs font-bold text-white'>
+                    <span className='absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-indigo-500 text-[10px] font-bold text-white sm:h-5 sm:w-5 sm:text-xs'>
                       {i + 1}
                     </span>
                   </div>
-                  <h3 className='text-lg font-bold text-white'>{title}</h3>
+                  <h3 className='text-sm font-bold text-white sm:text-lg'>
+                    {title}
+                  </h3>
                 </div>
-                <p className='mt-4 text-sm leading-relaxed text-slate-400'>
+                <p className='mt-3 text-xs leading-relaxed text-slate-400 sm:mt-4 sm:text-sm'>
                   {description}
                 </p>
               </div>
@@ -399,28 +441,29 @@ export default async function TeachWithUsPage() {
         </div>
       </section>
 
-      <section className='relative overflow-hidden bg-linear-to-br from-indigo-600 via-indigo-700 to-purple-700 py-24'>
+      {/* ── CTA ── */}
+      <section className='relative overflow-hidden bg-linear-to-br from-indigo-600 via-indigo-700 to-purple-700 py-10 sm:py-24'>
         <div className='pointer-events-none absolute -left-20 -top-20 h-72 w-72 rounded-full bg-white/5 blur-3xl' />
         <div className='pointer-events-none absolute -bottom-20 -right-20 h-72 w-72 rounded-full bg-white/5 blur-3xl' />
 
         <div className='relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
-          <div className='grid items-center gap-12 lg:grid-cols-2'>
+          <div className='grid items-center gap-10 lg:grid-cols-2 lg:gap-12'>
             <div>
-              <h2 className='text-4xl font-extrabold tracking-tight text-white sm:text-5xl'>
+              <h2 className='text-2xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl'>
                 Ready to start teaching?
               </h2>
-              <p className='mt-4 text-lg text-indigo-200'>
+              <p className='mt-3 text-sm text-indigo-200 sm:mt-4 sm:text-lg'>
                 Join TutorLink today — free to apply, and you could be earning
                 within days.
               </p>
-              <ul className='mt-8 space-y-3'>
+              <ul className='mt-6 space-y-2.5 sm:mt-8 sm:space-y-3'>
                 {highlights.map((item) => (
                   <li
                     key={item}
-                    className='flex items-center gap-3 text-sm text-indigo-100'>
+                    className='flex items-center gap-2.5 text-xs text-indigo-100 sm:gap-3 sm:text-sm'>
                     <CheckCircle
-                      size={16}
-                      className='shrink-0 text-indigo-300'
+                      size={14}
+                      className='shrink-0 text-indigo-300 sm:size-4'
                     />
                     {item}
                   </li>
@@ -429,24 +472,22 @@ export default async function TeachWithUsPage() {
             </div>
 
             <div className='flex justify-center lg:justify-end'>
-              <div className='w-full max-w-sm rounded-2xl bg-white/10 p-8 backdrop-blur ring-1 ring-white/20'>
+              <div className='w-full max-w-sm rounded-2xl bg-white/10 p-6 backdrop-blur ring-1 ring-white/20 sm:p-8'>
                 <p className='text-sm font-medium text-indigo-200'>
                   Avg. tutor earns
                 </p>
-                <p className='mt-1 text-5xl font-extrabold text-white'>
+                <p className='mt-1 text-4xl font-extrabold text-white sm:text-5xl'>
                   {rateRange}
                 </p>
                 <p className='mt-1 text-sm text-indigo-300'>per hour</p>
-                <div className='my-6 border-t border-white/15' />
-                <p className='text-sm text-indigo-200'>
+                <div className='my-5 border-t border-white/15 sm:my-6' />
+                <p className='text-xs text-indigo-200 sm:text-sm'>
                   Set your own rate. Top tutors earn significantly more.
                 </p>
                 <Link
                   href='/register'
-                  className='mt-6 block'>
-                  <Button
-                    size='lg'
-                    className='w-full gap-2 bg-white text-indigo-700 hover:bg-indigo-50'>
+                  className='mt-5 block sm:mt-6'>
+                  <Button className='w-full gap-2 bg-white text-indigo-700 hover:bg-indigo-50'>
                     Apply Now — It&apos;s Free
                     <ArrowRight size={18} />
                   </Button>
