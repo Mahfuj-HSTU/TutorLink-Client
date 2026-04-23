@@ -17,15 +17,12 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  // Already logged in — send to the right dashboard
   useEffect(() => {
     if (isPending || !user) return
     if (user.role === 'ADMIN') router.replace('/admin/dashboard')
     else if (user.role === 'TUTOR') router.replace('/tutor/dashboard')
     else router.replace('/dashboard')
   }, [user, isPending, router])
-
-  // Only hide the form once we *know* the user is logged in (not while still checking)
   if (!isPending && user) {
     return (
       <div className='flex min-h-[40vh] items-center justify-center'>
@@ -41,7 +38,6 @@ export default function LoginPage() {
 
     try {
       const result = await signIn.email({ email, password })
-
       if (result.error) {
         setError(
           result.error.message ?? 'Invalid credentials. Please try again.'
@@ -50,13 +46,6 @@ export default function LoginPage() {
       }
 
       toast.success('Welcome back!')
-
-      const role = (result.data as { user?: { role?: string } })?.user?.role
-      if (role === 'ADMIN') router.push('/admin/dashboard')
-      else if (role === 'TUTOR') router.push('/tutor/dashboard')
-      else router.push('/dashboard')
-
-      router.refresh()
     } catch {
       setError('Something went wrong. Please try again.')
     } finally {
@@ -67,7 +56,6 @@ export default function LoginPage() {
   return (
     <>
       <h1 className='mb-6 text-2xl font-bold text-slate-900'>Welcome back</h1>
-
       <form
         onSubmit={handleSubmit}
         className='flex flex-col gap-4'>
@@ -113,10 +101,6 @@ export default function LoginPage() {
           Create one
         </Link>
       </p>
-
-      {/* <div className="mt-4 rounded-lg bg-slate-50 p-3 text-xs text-slate-500">
-        <strong>Admin demo:</strong> admin@tutorlink.com / tutorlink_admin123
-      </div> */}
     </>
   )
 }
