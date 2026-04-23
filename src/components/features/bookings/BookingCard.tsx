@@ -4,7 +4,9 @@ import type { Booking, BookingStatus } from "@/types";
 import Button from "@/components/ui/Button";
 import StarRating from "@/components/ui/StarRating";
 import { formatDateTime } from "@/lib/utils";
-import { CalendarDays, Clock, MessageSquare, Pencil, Timer } from "lucide-react";
+import { useInitPaymentMutation } from "@/lib/redux/api/paymentApi";
+import { CalendarDays, Clock, CreditCard, MessageSquare, Pencil, Timer } from "lucide-react";
+import toast from "react-hot-toast";
 
 const statusConfig: Record<BookingStatus, { border: string; badge: string; label: string }> = {
   CONFIRMED: {
@@ -63,10 +65,21 @@ export default function BookingCard({
   isUpdating,
   onReview,
 }: BookingCardProps) {
+  const [initPayment, { isLoading: isPaymentLoading }] = useInitPaymentMutation()
   const counterpart = viewAs === "student" ? booking.tutor?.user : booking.student;
   const hasReview = !!booking.review;
   const showReviewSection = viewAs === "student" && booking.status === "COMPLETED" && !!onReview;
   const sessionEnded = new Date() >= new Date(booking.endTime);
+  const isPaid = booking.payment?.status === "PAID";
+
+  const handlePayNow = async () => {
+    try {
+      const res = await initPayment({ bookingId: booking.id }).unwrap()
+      window.location.href = res.data.gatewayUrl
+    } catch {
+      toast.error("Could not initiate payment. Please try again.")
+    }
+  }
   const { border, badge, label } = statusConfig[booking.status];
   const duration = getDuration(booking.startTime, booking.endTime);
 
@@ -121,6 +134,18 @@ export default function BookingCard({
         </div>
       )}
 
+      {/* Payment status chip */}
+      {booking.status === "CONFIRMED" && sessionEnded && (
+        <div className={`mx-5 mb-3 flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium ${
+          isPaid
+            ? "bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-200"
+            : "bg-orange-50 text-orange-700 ring-1 ring-inset ring-orange-200"
+        }`}>
+          <CreditCard size={12} />
+          {isPaid ? "Payment received" : "Awaiting payment from student"}
+        </div>
+      )}
+
       {/* Student review (inline) */}
       {showReviewSection && hasReview && (
         <div className="mx-5 mb-3 rounded-xl border border-amber-100 bg-amber-50 px-4 py-3">
@@ -155,6 +180,24 @@ export default function BookingCard({
               {booking.review!.comment}
             </p>
           )}
+        </div>
+      )}
+
+      {/* Student: Pay Now — shown after session ends, before payment */}
+      {viewAs === "student" && booking.status === "CONFIRMED" && sessionEnded && !isPaid && (
+        <div className="border-t border-slate-100 px-5 py-3">
+          <Button
+            size="sm"
+            className="w-full gap-2 bg-emerald-600 text-white hover:bg-emerald-500"
+            onClick={handlePayNow}
+            loading={isPaymentLoading}
+          >
+            <CreditCard size={14} />
+            Pay ৳{booking.price.toFixed(0)} Now
+          </Button>
+          <p className="mt-1.5 text-center text-xs text-slate-400">
+            Secure payment via SSLCommerz
+          </p>
         </div>
       )}
 
