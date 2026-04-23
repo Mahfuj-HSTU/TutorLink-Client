@@ -142,7 +142,9 @@ export default function BookingCard({
             : "bg-orange-50 text-orange-700 ring-1 ring-inset ring-orange-200"
         }`}>
           <CreditCard size={12} />
-          {isPaid ? "Payment received" : "Awaiting payment from student"}
+          {isPaid
+            ? `Payment received · ৳${(booking.payment?.amount ?? booking.price).toFixed(0)}`
+            : "Awaiting payment from student"}
         </div>
       )}
 
@@ -209,7 +211,7 @@ export default function BookingCard({
               size="sm"
               onClick={() => onStatusChange(booking.id, "COMPLETED")}
               loading={isUpdating}
-              disabled={!sessionEnded}
+              disabled={!sessionEnded || !isPaid}
               className="flex-1"
             >
               Mark Complete
@@ -223,16 +225,18 @@ export default function BookingCard({
               Cancel
             </Button>
           </div>
-          {!sessionEnded && (
+          {(!sessionEnded || !isPaid) && (
             <p className="text-center text-xs text-slate-400">
-              Available after session ends · {new Date(booking.endTime).toLocaleString()}
+              {!sessionEnded
+                ? `Available after session ends · ${new Date(booking.endTime).toLocaleString()}`
+                : "Waiting for student payment"}
             </p>
           )}
         </div>
       )}
 
-      {/* Student cancel */}
-      {viewAs === "student" && booking.status === "CONFIRMED" && onStatusChange && (
+      {/* Student cancel — hidden once session has ended */}
+      {viewAs === "student" && booking.status === "CONFIRMED" && !sessionEnded && onStatusChange && (
         <div className="border-t border-slate-100 px-5 py-3">
           <Button
             size="sm"
