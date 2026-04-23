@@ -98,13 +98,27 @@ export default function BookingCard({
     }
   }
 
+  const hasActions =
+    // student pay
+    (viewAs === 'student' &&
+      booking.status === 'CONFIRMED' &&
+      sessionEnded &&
+      !isPaid) ||
+    // student cancel
+    (viewAs === 'student' &&
+      booking.status === 'CONFIRMED' &&
+      !sessionEnded &&
+      onStatusChange) ||
+    // student review
+    (showReviewSection && !hasReview) ||
+    // tutor actions
+    (viewAs === 'tutor' && booking.status === 'CONFIRMED' && onStatusChange)
+
   return (
     <div className='group relative overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200 transition-all duration-200 hover:shadow-md hover:ring-slate-300'>
-      {/* Top accent */}
       <div className={`h-1 ${accent}`} />
 
       <div className='relative px-4 py-4'>
-        {/* HEADER */}
         <div className='flex items-start justify-between gap-3'>
           <div className='flex items-center gap-3 min-w-0'>
             <div
@@ -138,10 +152,8 @@ export default function BookingCard({
           </div>
         </div>
 
-        {/* DIVIDER */}
         <div className='my-3 h-px bg-slate-100' />
 
-        {/* TIME */}
         <div className='flex items-center justify-between gap-3 text-xs'>
           <div className='flex flex-col gap-1 min-w-0'>
             <span className='flex items-center gap-1.5 text-slate-600'>
@@ -160,7 +172,6 @@ export default function BookingCard({
           </span>
         </div>
 
-        {/* QUESTION */}
         {booking.questions && (
           <div className='mt-3 flex gap-2 rounded-lg bg-slate-50 px-3 py-2 text-xs text-slate-600'>
             <MessageSquare
@@ -171,7 +182,6 @@ export default function BookingCard({
           </div>
         )}
 
-        {/* PAYMENT */}
         {booking.status === 'CONFIRMED' && sessionEnded && (
           <div
             className={`mt-3 flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium ${
@@ -227,11 +237,7 @@ export default function BookingCard({
           </div>
         )}
 
-        {((viewAs === 'student' &&
-          booking.status === 'CONFIRMED' &&
-          (sessionEnded || !sessionEnded)) ||
-          (viewAs === 'tutor' && booking.status === 'CONFIRMED') ||
-          showReviewSection) && (
+        {hasActions && (
           <div className='mt-4 pt-3 border-t border-slate-100 flex flex-wrap gap-2'>
             {viewAs === 'student' &&
               booking.status === 'CONFIRMED' &&
@@ -246,7 +252,6 @@ export default function BookingCard({
                 </Button>
               )}
 
-            {/* STUDENT: CANCEL */}
             {viewAs === 'student' &&
               booking.status === 'CONFIRMED' &&
               !sessionEnded &&
@@ -262,7 +267,6 @@ export default function BookingCard({
                 </Button>
               )}
 
-            {/* STUDENT: REVIEW */}
             {showReviewSection && !hasReview && (
               <Button
                 size='sm'
@@ -273,7 +277,6 @@ export default function BookingCard({
               </Button>
             )}
 
-            {/* TUTOR ACTIONS */}
             {viewAs === 'tutor' &&
               booking.status === 'CONFIRMED' &&
               onStatusChange && (
