@@ -1,6 +1,19 @@
 export type UserRole = 'STUDENT' | 'TUTOR' | 'ADMIN'
 export type TeachingMode = 'ONLINE' | 'OFFLINE' | 'BOTH'
 export type BookingStatus = 'CONFIRMED' | 'COMPLETED' | 'CANCELLED'
+export type PaymentStatus = 'PENDING' | 'PAID' | 'FAILED' | 'CANCELLED'
+
+export interface Payment {
+  id: string
+  bookingId: string
+  studentId: string
+  amount: number
+  tranId: string
+  status: PaymentStatus
+  valId?: string
+  createdAt: string
+  updatedAt: string
+}
 
 export interface User {
   id: string
@@ -61,6 +74,7 @@ export interface Booking {
   }
   student?: Pick<User, 'id' | 'name' | 'image'>
   review?: Review
+  payment?: Payment
 }
 
 export interface Review {
