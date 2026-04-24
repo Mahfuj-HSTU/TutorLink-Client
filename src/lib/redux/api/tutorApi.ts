@@ -1,31 +1,29 @@
-import { baseApi } from "./baseApi";
+import { baseApi } from './baseApi'
 import type {
   TutorProfile,
   CreateTutorProfilePayload,
   TutorQueryParams,
-  ApiResponse,
-} from "@/types";
+  ApiResponse
+} from '@/types'
 
 export const tutorApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    // ── Public ─────────────────────────────────────────────────────────────
     getTutors: builder.query<ApiResponse<TutorProfile[]>, TutorQueryParams>({
       query: (params) => ({
-        url: "/tutors",
-        params,
+        url: '/tutors',
+        params
       }),
-      providesTags: ["Tutor"],
+      providesTags: ['Tutor']
     }),
 
     getTutorById: builder.query<ApiResponse<TutorProfile>, string>({
       query: (id) => `/tutors/${id}`,
-      providesTags: (_result, _error, id) => [{ type: "Tutor", id }],
+      providesTags: (_result, _error, id) => [{ type: 'Tutor', id }]
     }),
 
-    // ── Tutor-protected ────────────────────────────────────────────────────
     getMyTutorProfile: builder.query<ApiResponse<TutorProfile | null>, void>({
-      query: () => "/tutors/me",
-      providesTags: ["Tutor"],
+      query: () => '/tutors/me',
+      providesTags: ['Tutor']
     }),
 
     createTutorProfile: builder.mutation<
@@ -33,11 +31,11 @@ export const tutorApi = baseApi.injectEndpoints({
       CreateTutorProfilePayload
     >({
       query: (body) => ({
-        url: "/tutors/profile",
-        method: "POST",
-        body,
+        url: '/tutors/profile',
+        method: 'POST',
+        body
       }),
-      invalidatesTags: ["Tutor"],
+      invalidatesTags: ['Tutor']
     }),
 
     updateTutorProfile: builder.mutation<
@@ -45,11 +43,11 @@ export const tutorApi = baseApi.injectEndpoints({
       CreateTutorProfilePayload
     >({
       query: (body) => ({
-        url: "/tutors/profile",
-        method: "PUT",
-        body,
+        url: '/tutors/profile',
+        method: 'PUT',
+        body
       }),
-      invalidatesTags: ["Tutor"],
+      invalidatesTags: ['Tutor']
     }),
 
     updateTutorCategories: builder.mutation<
@@ -57,11 +55,11 @@ export const tutorApi = baseApi.injectEndpoints({
       { categoryIds: string[] }
     >({
       query: (body) => ({
-        url: "/tutors/categories",
-        method: "PUT",
-        body,
+        url: '/tutors/categories',
+        method: 'PUT',
+        body
       }),
-      invalidatesTags: ["Tutor"],
+      invalidatesTags: ['Tutor']
     }),
 
     updateTutorAvailability: builder.mutation<
@@ -69,14 +67,14 @@ export const tutorApi = baseApi.injectEndpoints({
       { isAvailable: boolean }
     >({
       query: (body) => ({
-        url: "/tutors/availability",
-        method: "PUT",
-        body,
+        url: '/tutors/availability',
+        method: 'PUT',
+        body
       }),
-      invalidatesTags: ["Tutor"],
-    }),
-  }),
-});
+      invalidatesTags: ['Tutor']
+    })
+  })
+})
 
 export const {
   useGetTutorsQuery,
@@ -85,5 +83,5 @@ export const {
   useCreateTutorProfileMutation,
   useUpdateTutorProfileMutation,
   useUpdateTutorCategoriesMutation,
-  useUpdateTutorAvailabilityMutation,
-} = tutorApi;
+  useUpdateTutorAvailabilityMutation
+} = tutorApi
