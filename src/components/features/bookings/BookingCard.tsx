@@ -281,14 +281,24 @@ export default function BookingCard({
               booking.status === 'CONFIRMED' &&
               onStatusChange && (
                 <>
-                  <Button
-                    size='sm'
-                    className='flex-1'
-                    loading={isUpdating}
-                    disabled={!sessionEnded || !isPaid}
-                    onClick={() => onStatusChange(booking.id, 'COMPLETED')}>
-                    Mark Complete
-                  </Button>
+                  <span className='group relative flex-1'>
+                    <Button
+                      size='sm'
+                      className='w-full'
+                      loading={isUpdating}
+                      disabled={!sessionEnded || !isPaid}
+                      onClick={() => onStatusChange(booking.id, 'COMPLETED')}>
+                      Mark Complete
+                    </Button>
+                    {(!sessionEnded || !isPaid) && (
+                      <span className='pointer-events-none absolute bottom-full left-1/2 mb-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-slate-800 px-2.5 py-1.5 text-[11px] text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100'>
+                        {!sessionEnded
+                          ? 'Session has not ended yet'
+                          : 'Awaiting student payment'}
+                        <span className='absolute left-1/2 top-full -translate-x-1/2 border-4 border-transparent border-t-slate-800' />
+                      </span>
+                    )}
+                  </span>
 
                   <Button
                     size='sm'
