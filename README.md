@@ -1,6 +1,6 @@
 # TutorLink
 
-A full-stack tutoring platform where students find and book sessions with tutors. Built as a Level-2 capstone project using Next.js 16 and Express.js with PostgreSQL.
+A full-stack tutoring platform where students find and book sessions with tutors. Built the project using Next.js 16 and Express.js with PostgreSQL.
 
 **Live:** https://tutorlinkpro.vercel.app  
 **Backend API:** https://tutorlink-server.onrender.com  
@@ -19,6 +19,7 @@ Three roles exist: `STUDENT`, `TUTOR`, `ADMIN`. A user signs up as a student by 
 ## Stack
 
 **Frontend**
+
 - Next.js 16 (App Router, React 19)
 - TypeScript
 - Tailwind CSS 4
@@ -26,6 +27,7 @@ Three roles exist: `STUDENT`, `TUTOR`, `ADMIN`. A user signs up as a student by 
 - Better-Auth (session management, client-side)
 
 **Backend**
+
 - Express.js 5 with TypeScript
 - PostgreSQL on Neon Cloud
 - Prisma ORM (modular schema files)
@@ -100,11 +102,11 @@ Route groups (the folders in parentheses) share a layout but have separate auth 
 
 Authentication is session-based via [Better-Auth](https://www.better-auth.com/). After sign-in, the session cookie is set by the backend and read on every request.
 
-| Role | Default access |
-|------|---------------|
-| STUDENT | Browse tutors, book sessions, pay, leave reviews |
-| TUTOR | Manage profile and categories, view/update bookings |
-| ADMIN | Manage users (ban/unban), manage categories |
+| Role    | Default access                                      |
+| ------- | --------------------------------------------------- |
+| STUDENT | Browse tutors, book sessions, pay, leave reviews    |
+| TUTOR   | Manage profile and categories, view/update bookings |
+| ADMIN   | Manage users (ban/unban), manage categories         |
 
 An admin account is seeded automatically when the backend starts (see backend `.env` for credentials).
 
@@ -157,16 +159,16 @@ npm run dev              # start the server on :5000
 
 All routes are prefixed with `/api`.
 
-| Resource | Base path | Notes |
-|----------|-----------|-------|
-| Auth | `/auth` | Sign up, sign in, sign out, session |
-| Tutors | `/tutors` | Browse, filter, profile CRUD |
-| Bookings | `/bookings` | Create, list, update status |
-| Reviews | `/reviews` | Create, update, list by tutor |
-| Payments | `/payment` | Init, success/fail/cancel callbacks |
-| Categories | `/categories` | Public read; admin write |
-| Admin | `/admin` | User management |
-| Stats | `/stats` | Platform counts, featured tutor |
+| Resource   | Base path     | Notes                               |
+| ---------- | ------------- | ----------------------------------- |
+| Auth       | `/auth`       | Sign up, sign in, sign out, session |
+| Tutors     | `/tutors`     | Browse, filter, profile CRUD        |
+| Bookings   | `/bookings`   | Create, list, update status         |
+| Reviews    | `/reviews`    | Create, update, list by tutor       |
+| Payments   | `/payment`    | Init, success/fail/cancel callbacks |
+| Categories | `/categories` | Public read; admin write            |
+| Admin      | `/admin`      | User management                     |
+| Stats      | `/stats`      | Platform counts, featured tutor     |
 
 ---
 
