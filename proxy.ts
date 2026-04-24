@@ -4,28 +4,27 @@ const protectedPrefixes = [
 	'/dashboard',
 	'/bookings',
 	'/profile',
-	'/tutor/',
-	'/admin/'
+	'/tutor',
+	'/admin'
 ]
 
 export function proxy(request: NextRequest) {
-  const pathname = request.nextUrl.pathname;
-  // Skip middleware for verify-email route
-  if (pathname.startsWith("/verify-email")) {
-    return NextResponse.next();
-  }
+	const pathname = request.nextUrl.pathname
+
+	// Skip public routes
+	if (pathname.startsWith('/verify-email')) {
+		return NextResponse.next()
+	}
+
+	const isProtected = protectedPrefixes.some((p) => pathname.startsWith(p))
+
+	if (!isProtected) {
+		return NextResponse.next()
+	}
 
 	const sessionToken = request.cookies.get('better-auth.session_token')
-  const isAuthenticated = Boolean(sessionToken?.value)
-   //* User is not authenticated at all
-  if (!sessionToken) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
 
-	if (
-		!isAuthenticated &&
-		protectedPrefixes.some((p) => pathname.startsWith(p))
-	) {
+	if (!sessionToken?.value) {
 		const loginUrl = new URL('/login', request.url)
 		loginUrl.searchParams.set('callbackUrl', pathname)
 		return NextResponse.redirect(loginUrl)
