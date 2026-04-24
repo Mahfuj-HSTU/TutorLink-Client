@@ -258,10 +258,10 @@ export default function BookingCard({
               onStatusChange && (
                 <Button
                   size='sm'
-                  variant='ghost'
+                  variant='danger'
                   onClick={() => onStatusChange(booking.id, 'CANCELLED')}
                   loading={isUpdating}
-                  className='gap-1.5 border border-slate-200 hover:border-red-200 hover:bg-red-50 hover:text-red-600'>
+                  className='ml-auto gap-1.5'>
                   <XCircle size={14} />
                   Cancel
                 </Button>
