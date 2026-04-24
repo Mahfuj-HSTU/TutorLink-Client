@@ -2,6 +2,12 @@
 
 import type { Booking, BookingStatus } from '@/types'
 import Button from '@/components/ui/Button'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger
+} from '@/components/ui/tooltip'
 import StarRating from '@/components/ui/StarRating'
 import { formatDateTime } from '@/lib/utils'
 import { useInitPaymentMutation } from '@/lib/redux/api/paymentApi'
@@ -281,24 +287,34 @@ export default function BookingCard({
               booking.status === 'CONFIRMED' &&
               onStatusChange && (
                 <>
-                  <span className='group relative flex-1'>
-                    <Button
-                      size='sm'
-                      className='w-full'
-                      loading={isUpdating}
-                      disabled={!sessionEnded || !isPaid}
-                      onClick={() => onStatusChange(booking.id, 'COMPLETED')}>
-                      Mark Complete
-                    </Button>
-                    {(!sessionEnded || !isPaid) && (
-                      <span className='pointer-events-none absolute bottom-full left-1/2 mb-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-slate-800 px-2.5 py-1.5 text-[11px] text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100'>
-                        {!sessionEnded
-                          ? 'Session has not ended yet'
-                          : 'Awaiting student payment'}
-                        <span className='absolute left-1/2 top-full -translate-x-1/2 border-4 border-transparent border-t-slate-800' />
-                      </span>
-                    )}
-                  </span>
+                  <TooltipProvider delayDuration={0}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span className='flex-1'>
+                          <Button
+                            size='sm'
+                            className='w-full'
+                            loading={isUpdating}
+                            disabled={!sessionEnded || !isPaid}
+                            onClick={() =>
+                              onStatusChange(booking.id, 'COMPLETED')
+                            }>
+                            Mark Complete
+                          </Button>
+                        </span>
+                      </TooltipTrigger>
+                      {(!sessionEnded || !isPaid) && (
+                        <TooltipContent
+                          side='top'
+                          className='flex items-center gap-2 border-0 bg-slate-900 px-3 py-2 text-xs font-medium text-white shadow-xl'>
+                          <span className={`h-1.5 w-1.5 rounded-full ${!sessionEnded ? 'bg-amber-400' : 'bg-blue-400'}`} />
+                          {!sessionEnded
+                            ? 'Session has not ended yet'
+                            : 'Awaiting student payment'}
+                        </TooltipContent>
+                      )}
+                    </Tooltip>
+                  </TooltipProvider>
 
                   <Button
                     size='sm'
