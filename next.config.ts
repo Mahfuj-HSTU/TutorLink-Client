@@ -1,12 +1,18 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  // Allow fetching images from any HTTPS origin (covers tutor profile images)
-  images: {
-    remotePatterns: [
-      { protocol: "https", hostname: "**" },
-    ],
-  },
-};
+	images: {
+		remotePatterns: [{ protocol: 'https', hostname: '**' }]
+	},
 
-export default nextConfig;
+	async rewrites() {
+		return [
+			{
+				source: '/api/auth/:path*',
+				destination: `${process.env.NEXT_PUBLIC_API_URL}/api/auth/:path*`
+			}
+		]
+	}
+}
+
+export default nextConfig

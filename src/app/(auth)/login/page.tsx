@@ -36,9 +36,7 @@ export default function LoginPage() {
       }
       toast.success('Welcome back!')
       const role = (result.data as any)?.user?.role
-      const params = new URLSearchParams(window.location.search)
-      const callbackUrl = params.get('callbackUrl')
-      window.location.href = callbackUrl || dashboardHref(role)
+      window.location.href = dashboardHref(role)
     } catch {
       setError('Something went wrong. Please try again.')
     } finally {
