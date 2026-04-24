@@ -138,53 +138,62 @@ export default function TutorProfilePage() {
 
     return (
       <div className='max-w-3xl'>
-        <div className='relative overflow-hidden rounded-2xl bg-linear-to-br from-indigo-600 via-indigo-500 to-purple-600 p-6 text-white shadow-lg'>
-          <button
-            onClick={() => setEditing(true)}
-            className='absolute right-4 top-4 flex items-center gap-1.5 rounded-xl bg-white/20 px-3 py-1.5 text-sm font-medium text-white backdrop-blur-sm transition hover:bg-white/30'>
-            <Pencil size={14} />
-            Edit Profile
-          </button>
-
-          <div className='flex items-center gap-5'>
+        <div className='overflow-hidden rounded-2xl bg-linear-to-br from-indigo-600 via-indigo-500 to-purple-600 p-4 sm:p-6 text-white shadow-lg'>
+          {/* Top row: avatar + info + edit button */}
+          <div className='flex items-start gap-4'>
             {myProfile.user.image ? (
               <Image
                 src={myProfile.user.image}
                 alt={myProfile.user.name}
-                className='h-20 w-20 rounded-2xl border-2 border-white/40 object-cover shadow-md'
+                className='h-16 w-16 shrink-0 rounded-2xl border-2 border-white/40 object-cover shadow-md sm:h-20 sm:w-20'
               />
             ) : (
-              <div className='flex h-20 w-20 items-center justify-center rounded-2xl border-2 border-white/40 bg-white/20 text-3xl font-bold shadow-md'>
+              <div className='flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border-2 border-white/40 bg-white/20 text-2xl font-bold shadow-md sm:h-20 sm:w-20 sm:text-3xl'>
                 {initials}
               </div>
             )}
 
-            <div className='flex-1'>
-              <div className='flex flex-wrap items-center gap-2'>
-                <h1 className='text-xl font-bold'>{myProfile.user.name}</h1>
-                {myProfile.isVerified && (
-                  <span className='rounded-full bg-emerald-400/30 px-2.5 py-0.5 text-xs font-semibold text-emerald-100'>
-                    Verified
-                  </span>
-                )}
-                <span
-                  className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                    myProfile.isAvailable
-                      ? 'bg-sky-400/30 text-sky-100'
-                      : 'bg-white/20 text-white/70'
-                  }`}>
-                  {myProfile.isAvailable ? 'Available' : 'Unavailable'}
-                </span>
+            <div className='min-w-0 flex-1'>
+              <div className='flex items-start justify-between gap-2'>
+                <div className='min-w-0'>
+                  <div className='flex flex-wrap items-center gap-x-2 gap-y-1'>
+                    <h1 className='text-lg font-bold sm:text-xl'>
+                      {myProfile.user.name}
+                    </h1>
+                    {myProfile.isVerified && (
+                      <span className='rounded-full bg-emerald-400/30 px-2 py-0.5 text-xs font-semibold text-emerald-100'>
+                        Verified
+                      </span>
+                    )}
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
+                        myProfile.isAvailable
+                          ? 'bg-sky-400/30 text-sky-100'
+                          : 'bg-white/20 text-white/70'
+                      }`}>
+                      {myProfile.isAvailable ? 'Available' : 'Unavailable'}
+                    </span>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => setEditing(true)}
+                  className='flex shrink-0 items-center gap-1.5 rounded-xl bg-white/20 px-3 py-1.5 text-xs font-medium text-white backdrop-blur-sm transition hover:bg-white/30 sm:text-sm'>
+                  <Pencil size={13} />
+                  <span className='hidden sm:inline'>Edit Profile</span>
+                  <span className='sm:hidden'>Edit</span>
+                </button>
               </div>
+
               {myProfile.headline && (
-                <p className='mt-1 text-sm text-indigo-100'>
+                <p className='mt-2 text-sm text-indigo-100'>
                   {myProfile.headline}
                 </p>
               )}
-              <div className='mt-3 flex flex-wrap items-center gap-4 text-sm text-indigo-100'>
+              <div className='mt-2 flex flex-wrap items-center gap-3 text-sm text-indigo-100'>
                 <span className='flex items-center gap-1.5'>
                   <Star
-                    size={14}
+                    size={13}
                     className='fill-amber-300 text-amber-300'
                   />
                   {myProfile.rating.toFixed(1)} ({myProfile.totalReviews}{' '}
@@ -202,7 +211,7 @@ export default function TutorProfilePage() {
             </div>
           </div>
 
-          <div className='mt-5 grid grid-cols-3 gap-3 border-t border-white/20 pt-5'>
+          <div className='mt-5 grid grid-cols-3 gap-3 border-t border-white/20 pt-3 sm:pt-5'>
             <div className='text-center'>
               <p className='text-2xl font-bold'>৳{myProfile.hourlyRate}</p>
               <p className='text-xs text-indigo-200'>per hour</p>
@@ -224,7 +233,7 @@ export default function TutorProfilePage() {
         <div className='mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2'>
           {myProfile.bio && (
             <Card className='sm:col-span-2'>
-              <CardBody>
+              <CardBody className='px-4 sm:px-6'>
                 <h3 className='mb-2 flex items-center gap-2 text-sm font-semibold text-slate-700'>
                   <BookOpen
                     size={15}
@@ -241,7 +250,7 @@ export default function TutorProfilePage() {
 
           {myProfile.categories.length > 0 && (
             <Card>
-              <CardBody>
+              <CardBody className='px-4 sm:px-6'>
                 <h3 className='mb-3 flex items-center gap-2 text-sm font-semibold text-slate-700'>
                   <Users
                     size={15}
@@ -264,7 +273,7 @@ export default function TutorProfilePage() {
 
           {myProfile.languages.length > 0 && (
             <Card>
-              <CardBody>
+              <CardBody className='px-4 sm:px-6'>
                 <h3 className='mb-3 flex items-center gap-2 text-sm font-semibold text-slate-700'>
                   <Globe
                     size={15}
@@ -288,7 +297,7 @@ export default function TutorProfilePage() {
           {/* Qualification */}
           {myProfile.qualification && (
             <Card>
-              <CardBody>
+              <CardBody className='px-4 sm:px-6'>
                 <h3 className='mb-2 flex items-center gap-2 text-sm font-semibold text-slate-700'>
                   <Award
                     size={15}
@@ -306,7 +315,7 @@ export default function TutorProfilePage() {
           {/* Star rating */}
           {myProfile.totalReviews > 0 && (
             <Card>
-              <CardBody>
+              <CardBody className='px-4 sm:px-6'>
                 <h3 className='mb-3 flex items-center gap-2 text-sm font-semibold text-slate-700'>
                   <Star
                     size={15}

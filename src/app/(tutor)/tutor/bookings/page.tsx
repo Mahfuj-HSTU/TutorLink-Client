@@ -53,12 +53,12 @@ export default function TutorBookingsPage() {
       </div>
 
       {bookings.length > 0 && (
-        <div className="mb-6 flex gap-1 rounded-xl bg-slate-100 p-1">
+        <div className="mb-6 flex gap-1 overflow-x-auto rounded-xl bg-slate-100 p-1 scrollbar-none">
           {FILTERS.map((f) => (
             <button
               key={f.value}
               onClick={() => setFilter(f.value)}
-              className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
+              className={`flex shrink-0 items-center justify-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors sm:flex-1 sm:px-3 sm:text-sm ${
                 filter === f.value
                   ? "bg-white text-slate-900 shadow-sm"
                   : "text-slate-500 hover:text-slate-700"

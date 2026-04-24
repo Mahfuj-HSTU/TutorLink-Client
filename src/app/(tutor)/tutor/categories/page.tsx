@@ -12,7 +12,7 @@ import Button from '@/components/ui/Button'
 import Badge from '@/components/ui/Badge'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import toast from 'react-hot-toast'
-import { BookOpen } from 'lucide-react'
+import { BookOpen, Check } from 'lucide-react'
 
 export default function TutorCategoriesPage() {
   const { data: profileData, isLoading: loadingProfile } =
@@ -60,17 +60,26 @@ export default function TutorCategoriesPage() {
       <h1 className='mb-6 text-2xl font-bold text-slate-900'>My Subjects</h1>
 
       <Card className='max-w-2xl'>
-        <CardHeader>
-          <div className='flex items-center justify-between'>
-            <p className='flex items-center gap-2 font-semibold text-slate-900'>
-              <BookOpen size={18} />
-              Select the subjects you teach
-            </p>
-            <Badge variant='info'>{selected.size} selected</Badge>
+        <CardHeader className='px-4 sm:px-6'>
+          <div className='flex items-start gap-3'>
+            <span className='flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600'>
+              <BookOpen size={16} />
+            </span>
+            <div className='min-w-0 flex-1'>
+              <div className='flex flex-wrap items-center gap-x-2 gap-y-1'>
+                <p className='text-sm font-semibold text-slate-900'>
+                  Select the subjects you teach
+                </p>
+                <Badge variant='info'>{selected.size} selected</Badge>
+              </div>
+              <p className='mt-0.5 text-xs text-slate-400'>
+                Tap a subject to select or deselect it
+              </p>
+            </div>
           </div>
         </CardHeader>
-        <CardBody>
-          <div className='grid grid-cols-2 gap-3 sm:grid-cols-3'>
+        <CardBody className='px-4 sm:px-6'>
+          <div className='flex flex-wrap gap-2'>
             {categories.map((cat) => {
               const isSelected = selected.has(cat.id)
               return (
@@ -78,18 +87,24 @@ export default function TutorCategoriesPage() {
                   key={cat.id}
                   type='button'
                   onClick={() => toggle(cat.id)}
-                  className={`rounded-xl border-2 px-4 py-3 text-sm font-medium transition-colors ${
+                  className={`flex items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-medium transition-all duration-150 ${
                     isSelected
-                      ? 'border-indigo-600 bg-indigo-50 text-indigo-700'
-                      : 'border-slate-200 text-slate-600 hover:border-indigo-300'
+                      ? 'border-indigo-600 bg-indigo-600 text-white shadow-sm shadow-indigo-200'
+                      : 'border-slate-200 bg-white text-slate-600 hover:border-indigo-300 hover:text-indigo-600'
                   }`}>
+                  {isSelected && (
+                    <Check
+                      size={13}
+                      strokeWidth={2.5}
+                    />
+                  )}
                   {cat.name}
                 </button>
               )
             })}
           </div>
 
-          <div className='mt-6 flex justify-end'>
+          <div className='mt-6 flex justify-end border-t border-slate-100 pt-4'>
             <Button
               onClick={handleSave}
               loading={isSaving}>
